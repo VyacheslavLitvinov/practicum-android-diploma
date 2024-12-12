@@ -5,15 +5,17 @@ import android.net.NetworkCapabilities
 import ru.practicum.android.diploma.data.dto.Response
 import ru.practicum.android.diploma.domain.NetworkClient
 
-class RetrofitNetworkClient(private val connectivityManager: ConnectivityManager,
-                            private val imdbService: HhApi): NetworkClient {
+class RetrofitNetworkClient(
+    private val connectivityManager: ConnectivityManager,
+    private val imdbService: HhApi
+) : NetworkClient {
 
     override suspend fun doRequest(dto: Any): Response {
         if (!isConnected()) {
             return Response(-1)
         }
 
-        return Response(200) //убрать когда будет обработка ошибок
+        return Response(200) // убрать когда будет обработка ошибок
     }
 
     private fun isConnected(): Boolean {
