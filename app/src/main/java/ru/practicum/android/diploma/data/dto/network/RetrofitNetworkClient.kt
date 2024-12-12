@@ -1,23 +1,32 @@
 package ru.practicum.android.diploma.data.dto.network
 
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import ru.practicum.android.diploma.data.dto.Response
 import ru.practicum.android.diploma.domain.NetworkClient
 
-class RetrofitNetworkClient: NetworkClient {
-
-    private val hhBaseURL = "https://api.hh.ru/"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(hhBaseURL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val itunesService = retrofit.create(HhApi::class.java)
+class RetrofitNetworkClient(private val connectivityManager: ConnectivityManager,
+                            private val imdbService: HhApi): NetworkClient {
 
     override suspend fun doRequest(dto: Any): Response {
-        TODO("Not yet implemented")
+        if (!isConnected()) {
+            return Response(-1)
+        }
+
+        return Response(200) //убрать когда будет обработка ошибок
+    }
+
+    private fun isConnected(): Boolean {
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> return true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> return true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> return true
+            }
+        }
+        return false
     }
 
 }
