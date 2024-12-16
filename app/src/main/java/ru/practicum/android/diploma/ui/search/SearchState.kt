@@ -4,14 +4,14 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 
 sealed interface SearchState {
 
-    object Loading: SearchState
+    object Loading : SearchState
 
-    data class Content(val vacancy: List<Vacancy>): SearchState
+    data class Content(val vacancy: List<Vacancy>) : SearchState
 
-    object ServerError: SearchState
+    object ServerError : SearchState
 
-    object NotFound: SearchState
+    object NotFound : SearchState
 
-    object NetworkError: SearchState
+    object NetworkError : SearchState
 
 }

@@ -58,9 +58,9 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupObserversState(){
+    private fun setupObserversState() {
         viewModel.screenStateLiveData.observe(viewLifecycleOwner) { state ->
-            when(state){
+            when (state) {
                 is SearchState.Loading -> showLoading()
                 is SearchState.Content -> showContent(state)
                 is SearchState.ServerError -> showServerError()
@@ -70,8 +70,8 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun showLoading(){
-        with(binding){
+    private fun showLoading() {
+        with(binding) {
             progressBar.isVisible = true
             vacancyCounter.isVisible = false
             recycleViewVacancy.isVisible = false
@@ -82,8 +82,8 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun showContent(state: SearchState.Content){
-        with(binding){
+    private fun showContent(state: SearchState.Content) {
+        with(binding) {
             progressBar.isVisible = false
             vacancyCounter.isVisible = true
             recycleViewVacancy.isVisible = true
@@ -95,24 +95,24 @@ class SearchFragment : Fragment() {
 //        добавить обновление адаптера после его создания
     }
 
-    private fun showServerError(){
-        with(binding){
+    private fun showServerError() {
+        with(binding) {
             progressBar.isVisible = false
             recycleViewVacancy.isVisible = false
             serverErrorPlaceholder.isVisible = true
         }
     }
 
-    private fun showNetworkError(){
-        with(binding){
+    private fun showNetworkError() {
+        with(binding) {
             progressBar.isVisible = false
             recycleViewVacancy.isVisible = false
             networkErrorPlaceholder.isVisible = true
         }
     }
 
-    private fun showNotFound(){
-        with(binding){
+    private fun showNotFound() {
+        with(binding) {
             progressBar.isVisible = false
             recycleViewVacancy.isVisible = false
             notFoundPlaceholder.isVisible = true
