@@ -6,13 +6,15 @@
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="guideline_indent">16dp</dimen>
     <dimen name="team_indent">16dp</dimen>
+    <dimen name="width_placeholder">328dp</dimen>
+    <dimen name="height_placeholder">223dp</dimen>
     <dimen name="toolbar_margin_indent">19dp</dimen>
     <dimen name="bottom_navigation_indent">57dp</dimen>
     <dimen name="top_toolbar_indent">64dp</dimen>
     <dimen name="line_up_bottom_menu">1dp</dimen>
-    <dimen name="indent_16">16dp</dimen>
+    <dimen name="icon_size">48dp</dimen>
+    <dimen name="icon_margin">8dp</dimen>
     <dimen name="indent_12">12dp</dimen>
     <dimen name="indent_4">4dp</dimen>
-    <dimen name="width_placeholder">328dp</dimen>
-    <dimen name="height_placeholder">223dp</dimen>
+    <dimen name="indent_16">16dp</dimen>
 </resources>
