@@ -5,18 +5,20 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
-import ru.practicum.android.diploma.data.db.entity.FavouritesVacancyEntity
+import ru.practicum.android.diploma.data.db.entity.FavoriteVacanciesEntity
 
 @Dao
 interface FavouritesVacancyDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavouritesVacancyEntity(vacancy: FavouritesVacancyEntity)
+    @Insert(FavoriteVacanciesEntity::class, OnConflictStrategy.REPLACE)
+    suspend fun insertFavoriteVacancy(vacancy: FavoriteVacanciesEntity)
 
-    @Query("SELECT * FROM favourites_vacancy_table")
-    fun getFavouritesVacancyList(): Flow<List<FavouritesVacancyEntity>>
+    @Query("SELECT * FROM favorite_vacancies_table")
+    fun getFavoriteVacanciesList(): List<FavoriteVacanciesEntity>
 
-    @Delete(entity = FavouritesVacancyEntity::class)
-    suspend fun deleteFavouritesVacancyEntity(vacancy: FavouritesVacancyEntity)
+    @Query("SELECT * FROM favorite_vacancies_table WHERE vacancy_id = :vacancyId")
+    fun getFavoriteVacancyById(vacancyId: String): FavoriteVacanciesEntity?
+
+    @Delete(FavoriteVacanciesEntity::class)
+    suspend fun deleteFavoriteVacancy(vacancy: FavoriteVacanciesEntity)
 }

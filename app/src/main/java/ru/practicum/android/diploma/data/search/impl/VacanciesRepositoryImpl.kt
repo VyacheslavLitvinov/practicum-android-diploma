@@ -57,10 +57,12 @@ class VacanciesRepositoryImpl(
         return if (salary == null) {
             null
         } else {
-            if (salary.from == salary.to) {
-                String.format(Locale.getDefault(), "%d %s", salary.to, getCurrencySymbolByCode(salary.currency!!))
-            } else if (salary.to == null) {
+            if (salary.from == null && salary.to != null) {
+                String.format(Locale.getDefault(), "до %d %s", salary.to, getCurrencySymbolByCode(salary.currency!!))
+            } else if (salary.from != null && salary.to == null) {
                 String.format(Locale.getDefault(), "от %d %s", salary.from, getCurrencySymbolByCode(salary.currency!!))
+            } else if (salary.from == salary.to) {
+                String.format(Locale.getDefault(), "%d %s", salary.to, getCurrencySymbolByCode(salary.currency!!))
             } else {
                 String.format(
                     Locale.getDefault(),

@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import ru.practicum.android.diploma.data.db.converter.VacancyConverter
 import ru.practicum.android.diploma.data.dto.network.RetrofitNetworkClient
 import ru.practicum.android.diploma.domain.NetworkClient
 
@@ -18,4 +19,6 @@ val dataModule = module {
     single<NetworkClient> {
         RetrofitNetworkClient(get())
     }
+
+    factory { VacancyConverter() }
 }
