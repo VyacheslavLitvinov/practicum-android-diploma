@@ -16,4 +16,8 @@ val interactorModule = module {
         FavoriteVacanciesInteractorImpl(get())
     }
 
+    single<VacancyInteractor> {
+        VacancyInteractorImpl(get())
+    }
+
 }
