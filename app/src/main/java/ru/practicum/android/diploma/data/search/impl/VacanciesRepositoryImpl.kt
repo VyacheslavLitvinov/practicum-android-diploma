@@ -33,7 +33,12 @@ class VacanciesRepositoryImpl(
                                 it.area.name,
                                 getCorrectFormOfSalaryText(it.salary),
                                 it.employer.name,
-                                it.employer.logoUrls?.original
+                                it.employer.logoUrls?.original,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
                             )
                         }
                         emit(listOfFoundedVacancies)
@@ -71,7 +76,7 @@ class VacanciesRepositoryImpl(
                         )
                     )
                 }
-                -1 -> {
+                RetrofitNetworkClient.INTERNET_NOT_CONNECT -> {
                     throw IOException("Network Error")
                 }
                 else -> {

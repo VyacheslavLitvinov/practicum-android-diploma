@@ -67,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/empty_list"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@id/ivEmptyListPlaceholder"
         app:layout_constraintStart_toStartOf="@id/ivEmptyListPlaceholder"
         app:layout_constraintTop_toBottomOf="@id/ivEmptyListPlaceholder"
@@ -80,6 +81,7 @@
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintTop_toBottomOf="@id/topGuideline"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.vacancy
+package ru.practicum.android.diploma.ui.vacancy.activity
 
 import android.content.Context
 import android.os.Bundle
@@ -17,7 +17,7 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.data.dto.model.VacancyFullItemDto
 import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
 import ru.practicum.android.diploma.domain.vacancy.model.VacancyState
-import ru.practicum.android.diploma.presentation.vacancy.VacancyViewModel
+import ru.practicum.android.diploma.ui.vacancy.viewmodel.VacancyViewModel
 
 class VacancyFragment : Fragment() {
 

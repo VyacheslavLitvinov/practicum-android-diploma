@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.vacancy
+package ru.practicum.android.diploma.ui.vacancy.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

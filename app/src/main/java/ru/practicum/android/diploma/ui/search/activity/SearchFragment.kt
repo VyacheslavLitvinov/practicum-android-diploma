@@ -11,16 +11,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Job
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.search.models.SearchParams
 import ru.practicum.android.diploma.domain.search.models.SearchScreenState
-import ru.practicum.android.diploma.ui.favorites.VacancyAdapter
 import ru.practicum.android.diploma.ui.favorites.activity.VacancyAdapter
 import ru.practicum.android.diploma.ui.search.viewmodel.SearchViewModel
 

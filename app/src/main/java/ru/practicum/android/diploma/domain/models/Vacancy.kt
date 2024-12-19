@@ -7,4 +7,9 @@ data class Vacancy(
     val salary: String?, // Зарплата
     val employerName: String, // Название компании-работодателя
     val employerLogoUrl: String?, // Ссылка на логотип компании-работодателя
+    val experience: String?, // Опыт работы
+    val employmentType: String?, // Тип занятости (удаленка или нет)
+    val scheduleType: String?, // Расписание (полный рабочий день и т. п.)
+    val keySkills: String?, // Ключевые навыки
+    val description: String? // Описание вакансии, в которое входят обязанности, требования, условия
 )

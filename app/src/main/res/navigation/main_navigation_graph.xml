@@ -67,7 +67,7 @@
         tools:layout="@layout/fragment_choice_industry" />
     <fragment
         android:id="@+id/vacancyFragment"
-        android:name="ru.practicum.android.diploma.ui.vacancy.VacancyFragment"
+        android:name="ru.practicum.android.diploma.ui.vacancy.activity.VacancyFragment"
         android:label="fragment_vacancy"
         tools:layout="@layout/fragment_vacancy" />
 

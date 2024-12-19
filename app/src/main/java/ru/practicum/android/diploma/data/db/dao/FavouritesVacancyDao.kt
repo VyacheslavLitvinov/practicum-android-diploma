@@ -14,10 +14,10 @@ interface FavouritesVacancyDao {
     suspend fun insertFavoriteVacancy(vacancy: FavoriteVacanciesEntity)
 
     @Query("SELECT * FROM favorite_vacancies_table")
-    fun getFavoriteVacanciesList(): List<FavoriteVacanciesEntity>
+    suspend fun getFavoriteVacanciesList(): List<FavoriteVacanciesEntity>
 
     @Query("SELECT * FROM favorite_vacancies_table WHERE vacancy_id = :vacancyId")
-    fun getFavoriteVacancyById(vacancyId: String): FavoriteVacanciesEntity?
+    suspend fun getFavoriteVacancyById(vacancyId: String): FavoriteVacanciesEntity?
 
     @Delete(FavoriteVacanciesEntity::class)
     suspend fun deleteFavoriteVacancy(vacancy: FavoriteVacanciesEntity)

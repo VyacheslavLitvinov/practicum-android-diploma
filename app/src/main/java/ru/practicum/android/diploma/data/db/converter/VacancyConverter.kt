@@ -11,7 +11,13 @@ class VacancyConverter {
             pictureOfCompanyLogoUri = vacancy.employerLogoUrl,
             titleOfVacancy = vacancy.titleOfVacancy,
             companyName = vacancy.employerName,
-            salary = vacancy.salary
+            salary = vacancy.salary,
+            city = vacancy.regionName,
+            experience = vacancy.experience,
+            employmentType = vacancy.employmentType,
+            scheduleType = vacancy.scheduleType,
+            keySkills = vacancy.keySkills,
+            vacancyDescription = vacancy.description
         )
     }
 
@@ -19,10 +25,15 @@ class VacancyConverter {
         return Vacancy(
             id = vacancyEntity.vacancyId,
             titleOfVacancy = vacancyEntity.titleOfVacancy,
-            regionName = "",
-            salary = null,
+            regionName = vacancyEntity.city,
+            salary = vacancyEntity.salary,
             employerName = vacancyEntity.companyName,
-            employerLogoUrl = vacancyEntity.pictureOfCompanyLogoUri
+            employerLogoUrl = vacancyEntity.pictureOfCompanyLogoUri,
+            experience = vacancyEntity.experience,
+            employmentType = vacancyEntity.employmentType,
+            scheduleType = vacancyEntity.scheduleType,
+            keySkills = vacancyEntity.keySkills,
+            description = vacancyEntity.vacancyDescription
         )
     }
 
