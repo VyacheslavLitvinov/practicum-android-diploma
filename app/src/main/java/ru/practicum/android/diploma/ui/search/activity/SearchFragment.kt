@@ -15,8 +15,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.search.models.SearchParams
-import ru.practicum.android.diploma.domain.search.models.SearchScreenState
 import ru.practicum.android.diploma.ui.favorites.activity.VacancyAdapter
+import ru.practicum.android.diploma.ui.search.viewmodel.SearchScreenState
 import ru.practicum.android.diploma.ui.search.viewmodel.SearchViewModel
 
 class SearchFragment : Fragment() {

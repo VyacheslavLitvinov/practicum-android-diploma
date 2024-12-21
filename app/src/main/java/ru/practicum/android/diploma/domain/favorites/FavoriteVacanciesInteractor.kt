@@ -7,4 +7,10 @@ interface FavoriteVacanciesInteractor {
 
     fun getFavoriteVacanciesList(): Flow<List<Vacancy>>
 
+    fun getFavoriteVacancyById(vacancyId: String): Flow<Vacancy?>
+
+    suspend fun insertVacancyInDb(vacancyForInsert: Vacancy)
+
+    suspend fun deleteVacancyFromDb(vacancyForDelete: Vacancy)
+
 }

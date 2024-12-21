@@ -15,7 +15,7 @@ import java.io.IOException
 
 class RetrofitNetworkClient(
     private val connectivityManager: ConnectivityManager,
-    private val imbdService: HhApi
+    private val hhService: HhApi
 ) : NetworkClient {
 
     override suspend fun doRequest(dto: Any): Response {
@@ -25,17 +25,14 @@ class RetrofitNetworkClient(
         return when (dto) {
             is VacancySearchRequest -> getSearchVacancy(dto)
             is VacancyRequest -> getFullVacancy(dto)
-            else -> {
-                return Response().apply { code = HTTP_BAD_REQUEST_CODE
-                }
-            }
+            else -> Response().apply { code = HTTP_BAD_REQUEST_CODE }
         }
     }
 
     private suspend fun getSearchVacancy(request: VacancySearchRequest): Response {
         return withContext(Dispatchers.IO) {
             try {
-                imbdService
+                hhService
                     .getVacancies(
                         request.searchParams.searchQuery,
                         request.searchParams.nameOfCityForFilter,
@@ -46,14 +43,14 @@ class RetrofitNetworkClient(
                         request.searchParams.numberOfVacanciesOnPage,
                         request.searchParams.numberOfPage
                     )
-                    .apply {
-                        code = HTTP_OK_CODE
-                    }
+                    .apply { code = HTTP_OK_CODE }
+
             } catch (e: HttpException) {
                 when (e.code()) {
                     HTTP_PAGE_NOT_FOUND_CODE -> Response().apply { code = HTTP_PAGE_NOT_FOUND_CODE }
                     else -> Response().apply { code = HTTP_CODE_0 }
                 }
+
             } catch (e: IOException) {
                 Log.e("errorSearchVacancy", "$e")
                 Response().apply { code = HTTP_INTERNAL_SERVER_ERROR_CODE }
@@ -64,8 +61,8 @@ class RetrofitNetworkClient(
     private suspend fun getFullVacancy(request: VacancyRequest): Response {
         return withContext(Dispatchers.IO) {
             try {
-                VacancyResponse(imbdService.getVacancyById(request.id))
-                    .apply { code = HTTP_OK_CODE }
+                VacancyResponse(hhService.getVacancyById(request.id)).apply { code = HTTP_OK_CODE }
+
             } catch (e: HttpException) {
                 Response().apply { code = e.code() }
 

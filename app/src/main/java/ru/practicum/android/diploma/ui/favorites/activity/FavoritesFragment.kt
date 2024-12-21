@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFavoritesBinding
-import ru.practicum.android.diploma.domain.favorites.models.FavoriteVacanciesScreenState
 import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.ui.favorites.viewmodel.FavoriteVacanciesScreenState
 import ru.practicum.android.diploma.ui.favorites.viewmodel.FavoritesViewModel
 
 class FavoritesFragment : Fragment() {
@@ -34,7 +34,7 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val onItemClickListener: (Vacancy) -> Unit = {
-            // Логика, исполняемая по нажатию на элемент списка вакансий
+
         }
         val onItemLongClickListener: (Vacancy) -> Unit = {
             // Логика, исполняемая по длительному нажатию на элемент списка вакансий

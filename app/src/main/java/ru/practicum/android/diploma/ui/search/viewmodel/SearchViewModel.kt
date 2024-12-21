@@ -9,17 +9,11 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import ru.practicum.android.diploma.domain.search.SearchInteractor
 import ru.practicum.android.diploma.domain.search.models.SearchParams
-import ru.practicum.android.diploma.domain.search.models.SearchScreenState
 import java.io.IOException
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor
 ) : ViewModel() {
-
-    companion object {
-        private const val HTTP_NOT_FOUND = 404
-        private const val HTTP_SERVER_ERROR = 500
-    }
 
     private val searchScreenStateLiveData = MutableLiveData<SearchScreenState>()
 
@@ -56,4 +50,10 @@ class SearchViewModel(
             }
         }
     }
+
+    companion object {
+        private const val HTTP_NOT_FOUND = 404
+        private const val HTTP_SERVER_ERROR = 500
+    }
+
 }

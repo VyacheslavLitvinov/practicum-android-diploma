@@ -13,4 +13,16 @@ class FavoriteVacanciesInteractorImpl(
         return favoriteVacanciesRepository.getFavoriteVacanciesList()
     }
 
+    override fun getFavoriteVacancyById(vacancyId: String): Flow<Vacancy?> {
+        return favoriteVacanciesRepository.getFavoriteVacancyById(vacancyId)
+    }
+
+    override suspend fun insertVacancyInDb(vacancyForInsert: Vacancy) {
+        favoriteVacanciesRepository.insertFavoriteVacancy(vacancyForInsert)
+    }
+
+    override suspend fun deleteVacancyFromDb(vacancyForDelete: Vacancy) {
+        favoriteVacanciesRepository.deleteFavoriteVacancy(vacancyForDelete)
+    }
+
 }

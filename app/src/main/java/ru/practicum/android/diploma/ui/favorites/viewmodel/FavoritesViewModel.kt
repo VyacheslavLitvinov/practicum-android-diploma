@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.favorites.FavoriteVacanciesInteractor
-import ru.practicum.android.diploma.domain.favorites.models.FavoriteVacanciesScreenState
 
 class FavoritesViewModel(
     private val favoriteVacanciesInteractor: FavoriteVacanciesInteractor
