@@ -10,14 +10,17 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Job
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.search.models.SearchParams
 import ru.practicum.android.diploma.ui.favorites.activity.VacancyAdapter
 import ru.practicum.android.diploma.ui.search.viewmodel.SearchScreenState
 import ru.practicum.android.diploma.ui.search.viewmodel.SearchViewModel
+import ru.practicum.android.diploma.ui.vacancy.activity.VacancyFragment
 
 class SearchFragment : Fragment() {
 
@@ -67,8 +70,17 @@ class SearchFragment : Fragment() {
             imm.showSoftInput(inputEditText, InputMethodManager.SHOW_IMPLICIT)
         }
 
-        val onItemClickListener: (Vacancy) -> Unit = {
-            // Логика для выполнения по обычному нажатию на элемент
+        val onItemClickListener: (Vacancy) -> Unit = { selectedVacancy ->
+            activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.isVisible = false
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .replace(
+                    R.id.container_view,
+                    VacancyFragment.newInstance(selectedVacancy.id),
+                    null
+                )
+                .addToBackStack(null)
+                .commit()
         }
         val onItemLongClickListener: (Vacancy) -> Unit = {
             // Логика для выполнения по долгому нажатию на элемент

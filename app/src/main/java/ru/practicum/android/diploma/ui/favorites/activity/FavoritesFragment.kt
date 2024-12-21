@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFavoritesBinding
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.ui.favorites.viewmodel.FavoriteVacanciesScreenState
 import ru.practicum.android.diploma.ui.favorites.viewmodel.FavoritesViewModel
+import ru.practicum.android.diploma.ui.vacancy.activity.VacancyFragment
 
 class FavoritesFragment : Fragment() {
 
@@ -33,8 +35,14 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val onItemClickListener: (Vacancy) -> Unit = {
+        val onItemClickListener: (Vacancy) -> Unit = { selectedVacancy ->
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView).isVisible = false
 
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container_view, VacancyFragment.newInstance(selectedVacancy.id), null)
+                .addToBackStack(null)
+                .commit()
         }
         val onItemLongClickListener: (Vacancy) -> Unit = {
             // Логика, исполняемая по длительному нажатию на элемент списка вакансий
@@ -77,6 +85,10 @@ class FavoritesFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val KEY_FOR_BUNDLE_DATA = "saved_vacancy"
     }
 
 }

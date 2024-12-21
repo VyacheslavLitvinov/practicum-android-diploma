@@ -5,11 +5,13 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentVacancyBinding
@@ -58,6 +60,14 @@ class VacancyFragment : Fragment() {
             }
         }
 
+        binding.ivBack.setOnClickListener {
+            goToPreviousScreen()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            goToPreviousScreen()
+        }
+
         val bundle = this.arguments
         if (bundle != null) {
             val vacancyId = bundle.getString(KEY_FOR_BUNDLE_DATA)
@@ -69,6 +79,11 @@ class VacancyFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun goToPreviousScreen() {
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationView)?.isVisible = true
+        activity?.supportFragmentManager?.popBackStack()
     }
 
     private fun render(state: VacancyState) {
@@ -160,10 +175,10 @@ class VacancyFragment : Fragment() {
     companion object {
         private const val KEY_FOR_BUNDLE_DATA = "saved_vacancy"
 
-        fun newInstance(vacancyFromBdId: String): VacancyFragment {
+        fun newInstance(vacancyId: String): VacancyFragment {
             val fragment = VacancyFragment()
             val bundle = Bundle()
-            bundle.putString(KEY_FOR_BUNDLE_DATA, vacancyFromBdId)
+            bundle.putString(KEY_FOR_BUNDLE_DATA, vacancyId)
             fragment.arguments = bundle
 
             return fragment

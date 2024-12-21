@@ -13,6 +13,7 @@ import ru.practicum.android.diploma.data.search.VacanciesRepository
 import ru.practicum.android.diploma.domain.NetworkClient
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.search.models.SearchParams
+import ru.practicum.android.diploma.util.CurrencyGlossary
 import java.io.IOException
 import java.util.Locale
 
@@ -91,41 +92,40 @@ class VacanciesRepositoryImpl(
         }
     }
 
-    private fun getCorrectFormOfSalaryText(salary: SalaryDto?): String? {
+    private fun getCorrectFormOfSalaryText(salary: SalaryDto?): String {
         return if (salary == null) {
-            null
+            "Зарплата не указана"
         } else {
             if (salary.from == null && salary.to != null) {
-                String.format(Locale.getDefault(), "до %d %s", salary.to, getCurrencySymbolByCode(salary.currency!!))
+                String.format(
+                    Locale.getDefault(),
+                    "до %d %s",
+                    salary.to,
+                    CurrencyGlossary.getCorrectSymbolOfCurrencyByCode(salary.currency!!)
+                )
             } else if (salary.from != null && salary.to == null) {
-                String.format(Locale.getDefault(), "от %d %s", salary.from, getCurrencySymbolByCode(salary.currency!!))
+                String.format(
+                    Locale.getDefault(),
+                    "от %d %s",
+                    salary.from,
+                    CurrencyGlossary.getCorrectSymbolOfCurrencyByCode(salary.currency!!)
+                )
             } else if (salary.from == salary.to) {
-                String.format(Locale.getDefault(), "%d %s", salary.to, getCurrencySymbolByCode(salary.currency!!))
+                String.format(
+                    Locale.getDefault(),
+                    "%d %s",
+                    salary.to,
+                    CurrencyGlossary.getCorrectSymbolOfCurrencyByCode(salary.currency!!)
+                )
             } else {
                 String.format(
                     Locale.getDefault(),
                     "от %d до %d %s",
                     salary.from,
                     salary.to,
-                    getCurrencySymbolByCode(salary.currency!!)
+                    CurrencyGlossary.getCorrectSymbolOfCurrencyByCode(salary.currency!!)
                 )
             }
-        }
-    }
-
-    private fun getCurrencySymbolByCode(code: String): String {
-        return when (code) {
-            "AZN" -> "₼"
-            "BYR" -> "Br"
-            "EUR" -> "€"
-            "GEL" -> "₾"
-            "KGS" -> "⃀"
-            "KZT" -> "₸"
-            "RUR" -> "₽"
-            "UAH" -> "₴"
-            "USD" -> "$"
-            "UZS" -> "Soʻm"
-            else -> ""
         }
     }
 }
