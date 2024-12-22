@@ -21,7 +21,7 @@ class VacanciesRepositoryImpl(
     private val networkClient: NetworkClient
 ) : VacanciesRepository {
 
-    override fun getVacancies(searchParams: SearchParams): Flow<List<Vacancy>> {
+    override fun getVacancies(searchParams: SearchParams): Flow<Pair<List<Vacancy>, Long>> {
         return flow {
             val response = networkClient.doRequest(VacancySearchRequest(searchParams))
             when (response.code) {
@@ -42,7 +42,7 @@ class VacanciesRepositoryImpl(
                                 null
                             )
                         }
-                        emit(listOfFoundedVacancies)
+                        emit(Pair(listOfFoundedVacancies, response.found))
                     }
                 }
                 RetrofitNetworkClient.HTTP_PAGE_NOT_FOUND_CODE -> {

@@ -23,9 +23,14 @@ class SearchViewModel(
         viewModelScope.launch {
             searchScreenStateLiveData.postValue(SearchScreenState.Loading)
             try {
-                searchInteractor.getVacancies(searchParams).collect { listOfVacancies ->
-                    if (listOfVacancies.isNotEmpty()) {
-                        searchScreenStateLiveData.postValue(SearchScreenState.Content(listOfVacancies))
+                searchInteractor.getVacancies(searchParams).collect { pairOfVacListAndNumOfVac ->
+                    if (pairOfVacListAndNumOfVac.first.isNotEmpty()) {
+                        searchScreenStateLiveData.postValue(
+                            SearchScreenState.Content(
+                                pairOfVacListAndNumOfVac.first,
+                                pairOfVacListAndNumOfVac.second
+                            )
+                        )
                     } else {
                         searchScreenStateLiveData.postValue(SearchScreenState.NotFound)
                     }

@@ -10,7 +10,7 @@ class SearchInteractorImpl(
     private val vacanciesRepository: VacanciesRepository
 ) : SearchInteractor {
 
-    override fun getVacancies(paramsForSearch: SearchParams): Flow<List<Vacancy>> {
+    override fun getVacancies(paramsForSearch: SearchParams): Flow<Pair<List<Vacancy>, Long>> {
         return vacanciesRepository.getVacancies(paramsForSearch)
     }
 

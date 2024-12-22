@@ -6,6 +6,6 @@ import ru.practicum.android.diploma.domain.search.models.SearchParams
 
 interface VacanciesRepository {
 
-    fun getVacancies(searchParams: SearchParams): Flow<List<Vacancy>>
+    fun getVacancies(searchParams: SearchParams): Flow<Pair<List<Vacancy>, Long>>
 
 }

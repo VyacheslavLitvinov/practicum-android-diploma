@@ -21,6 +21,7 @@ import ru.practicum.android.diploma.ui.favorites.activity.VacancyAdapter
 import ru.practicum.android.diploma.ui.search.viewmodel.SearchScreenState
 import ru.practicum.android.diploma.ui.search.viewmodel.SearchViewModel
 import ru.practicum.android.diploma.ui.vacancy.activity.VacancyFragment
+import java.util.Locale
 
 class SearchFragment : Fragment() {
 
@@ -46,6 +47,8 @@ class SearchFragment : Fragment() {
         val inputEditText = binding.etSearchVacancy
         val clearButton = binding.ibClearQuery
         val foundedVacanciesRecyclerView = binding.rvFoundedVacancies
+
+        setupObserversState()
 
         inputEditText.addTextChangedListener(onTextChanged = { s: CharSequence?, _, _, _ ->
             clearButton.isVisible = !s.isNullOrEmpty()
@@ -131,7 +134,11 @@ class SearchFragment : Fragment() {
         val foundedVacanciesRecyclerView = binding.rvFoundedVacancies
         val adapter = foundedVacanciesRecyclerView.adapter as? VacancyAdapter
         adapter?.setData(state.foundedVacancies)
-        binding.vacancyCounter.text = "Найдено ${state.foundedVacancies.size} вакансий"
+        binding.vacancyCounter.text = String.format(
+            Locale.getDefault(),
+            requireActivity().getString(R.string.vacancies_found),
+            state.countOfFoundedVacancies
+        )
     }
 
     private fun showServerError() {
