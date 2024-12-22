@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.ui.vacancy.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
@@ -52,6 +53,20 @@ class VacancyFragment : Fragment() {
             )
         }
 
+        viewModel.getShareLinkStateLiveData.observe(viewLifecycleOwner) { linkForShareState ->
+            if (linkForShareState.linkForShare != null) {
+                val shareIntent = Intent.createChooser(
+                    Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, linkForShareState.linkForShare)
+                        setType("text/plain")
+                    },
+                    null
+                )
+                startActivity(shareIntent)
+            }
+        }
+
         binding.ivFavorites.setOnClickListener {
             if (viewModel.getFavoriteVacancyButtonStateLiveData.value is FavoriteVacancyButtonState.VacancyIsFavorite) {
                 viewModel.deleteVacancyFromFavorites()
@@ -66,6 +81,10 @@ class VacancyFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             goToPreviousScreen()
+        }
+
+        binding.ivSharing.setOnClickListener {
+            viewModel.shareVacancy()
         }
 
         val bundle = this.arguments

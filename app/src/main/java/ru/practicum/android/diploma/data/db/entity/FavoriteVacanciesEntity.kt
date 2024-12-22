@@ -16,5 +16,6 @@ data class FavoriteVacanciesEntity(
     @ColumnInfo(name = "employment_type") val employmentType: String?,
     @ColumnInfo(name = "schedule_type") val scheduleType: String?,
     @ColumnInfo(name = "key_skills") val keySkills: String?,
-    @ColumnInfo(name = "vacancy_description") val vacancyDescription: String?
+    @ColumnInfo(name = "vacancy_description") val vacancyDescription: String?,
+    @ColumnInfo(name = "vacancy_url") val vacancyUrl: String?
 )

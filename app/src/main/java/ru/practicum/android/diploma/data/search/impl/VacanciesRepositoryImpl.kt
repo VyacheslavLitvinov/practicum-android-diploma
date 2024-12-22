@@ -39,6 +39,7 @@ class VacanciesRepositoryImpl(
                                 null,
                                 null,
                                 null,
+                                null,
                                 null
                             )
                         }

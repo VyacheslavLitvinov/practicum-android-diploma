@@ -11,5 +11,6 @@ data class Vacancy(
     val employmentType: String?, // Тип занятости (удаленка или нет)
     val scheduleType: String?, // Расписание (полный рабочий день и т. п.)
     val keySkills: String?, // Ключевые навыки
-    val description: String? // Описание вакансии, в которое входят обязанности, требования, условия
+    val description: String?, // Описание вакансии, в которое входят обязанности, требования, условия
+    val alternateUrl: String? // Ссылка на вакансию для шаринга
 )

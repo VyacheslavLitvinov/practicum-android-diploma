@@ -17,7 +17,8 @@ class VacancyConverter {
             employmentType = vacancy.employmentType,
             scheduleType = vacancy.scheduleType,
             keySkills = vacancy.keySkills,
-            vacancyDescription = vacancy.description
+            vacancyDescription = vacancy.description,
+            vacancyUrl = vacancy.alternateUrl
         )
     }
 
@@ -33,7 +34,8 @@ class VacancyConverter {
             employmentType = vacancyEntity.employmentType,
             scheduleType = vacancyEntity.scheduleType,
             keySkills = vacancyEntity.keySkills,
-            description = vacancyEntity.vacancyDescription
+            description = vacancyEntity.vacancyDescription,
+            alternateUrl = vacancyEntity.vacancyUrl
         )
     }
 

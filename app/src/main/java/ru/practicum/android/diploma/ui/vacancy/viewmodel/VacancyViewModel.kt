@@ -21,10 +21,13 @@ class VacancyViewModel(
 
     private val vacancyScreenStateLiveData = MutableLiveData<VacancyState>()
     private val favoriteVacancyButtonStateLiveData = MutableLiveData<FavoriteVacancyButtonState>()
+    private val shareLinkStateLiveData = MutableLiveData<ShareLinkState>()
 
     val getVacancyScreenStateLiveData: LiveData<VacancyState> = vacancyScreenStateLiveData
 
     val getFavoriteVacancyButtonStateLiveData: LiveData<FavoriteVacancyButtonState> = favoriteVacancyButtonStateLiveData
+
+    val getShareLinkStateLiveData: LiveData<ShareLinkState> = shareLinkStateLiveData
 
     fun getVacancyResources(id: String) {
         renderState(VacancyState.Loading)
@@ -53,6 +56,10 @@ class VacancyViewModel(
             }
         }
         favoriteVacancyButtonStateLiveData.postValue(FavoriteVacancyButtonState.VacancyIsNotFavorite)
+    }
+
+    fun shareVacancy() {
+        shareLinkStateLiveData.postValue(ShareLinkState(currentVacancy?.alternateUrl))
     }
 
     private fun processResult(vacancy: Vacancy?, errorMessage: String?) {

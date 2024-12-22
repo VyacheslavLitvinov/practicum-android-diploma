@@ -55,7 +55,8 @@ class VacancyRepositoryImpl(
             employmentType = vacancyForConvert.employment.name,
             scheduleType = vacancyForConvert.schedule.name,
             keySkills = convertKeySkillsToString(vacancyForConvert.keySkills),
-            description = vacancyForConvert.description
+            description = vacancyForConvert.description,
+            alternateUrl = vacancyForConvert.alternateUrl
         )
     }
 
