@@ -78,9 +78,9 @@ class ChoiceIndustryViewModel(
 
     fun setFilter(filter: Filter) {}
 
-    fun getFilter(): Filter {
-        return TODO()
-    }
+//    fun getFilter(): Filter {
+//        return TODO()
+//    }
 
     private fun renderState(state: IndustriesState) {
         _industriesState.postValue(state)
