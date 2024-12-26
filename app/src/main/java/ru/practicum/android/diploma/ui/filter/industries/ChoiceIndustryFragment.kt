@@ -9,6 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.databinding.FragmentChoiceIndustryBinding
+import ru.practicum.android.diploma.domain.models.Filter
 import ru.practicum.android.diploma.domain.models.Industry
 
 class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
@@ -33,19 +34,18 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
 
         binding.rvFoundedIndustry.isVisible = true
         viewModel.showIndustries()
-        val filterSharedPreferences = viewModel.getFilter()
+        var filterSharedPreferences: Filter = viewModel.getFilter()
         viewModel.industriesState.observe(viewLifecycleOwner) { state ->
             renderState(state)
         }
 
-        if (!filterSharedPreferences.industry?.id.isNullOrEmpty()){
+        if (!filterSharedPreferences.industry?.id.isNullOrEmpty()) {
             data = filterSharedPreferences.industry
             adapter?.updateSelection(data!!)
         }
 
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
-
         }
 
         val onItemClickListener: (Industry) -> Unit = {
@@ -67,7 +67,7 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
         )
 
         binding.btEnter.setOnClickListener {
-            filterSharedPreferences.industry = data
+            filterSharedPreferences = Filter(industry = data)
             viewModel.setFilter(filterSharedPreferences)
             parentFragmentManager.popBackStack()
         }
