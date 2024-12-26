@@ -9,14 +9,14 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.databinding.FragmentChoiceIndustryBinding
-import ru.practicum.android.diploma.domain.models.Industries
+import ru.practicum.android.diploma.domain.models.Industry
 
 class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
     private var _binding: FragmentChoiceIndustryBinding? = null
     private val viewModel by viewModel<ChoiceIndustryViewModel>()
     private val binding get() = _binding!!
     private var adapter: IndustriesAdapter? = null
-    private var data: Industries? = null
+    private var data: Industry? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,9 +33,14 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
 
         binding.rvFoundedIndustry.isVisible = true
         viewModel.showIndustries()
-
+        val filterSharedPreferences = viewModel.getFilter()
         viewModel.industriesState.observe(viewLifecycleOwner) { state ->
             renderState(state)
+        }
+
+        if (!filterSharedPreferences.industry?.id.isNullOrEmpty()){
+            data = filterSharedPreferences.industry
+            adapter?.updateSelection(data!!)
         }
 
         binding.ivBack.setOnClickListener {
@@ -43,10 +48,9 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
 
         }
 
-        val onItemClickListener: (Industries) -> Unit = {
+        val onItemClickListener: (Industry) -> Unit = {
             binding.btEnter.isVisible = true
             data = it
-
         }
 
         val foundedIndustryAdapter = IndustriesAdapter(
@@ -63,6 +67,8 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
         )
 
         binding.btEnter.setOnClickListener {
+            filterSharedPreferences.industry = data
+            viewModel.setFilter(filterSharedPreferences)
             parentFragmentManager.popBackStack()
         }
 
@@ -76,7 +82,7 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
         when (state) {
             is IndustriesState.FoundIndustries -> {
                 adapter = foundedIndustryRv.adapter as IndustriesAdapter
-                adapter?.updateIndustries(state.industries as List<Industries>)
+                adapter?.updateIndustries(state.industries as List<Industry>)
                 binding.rvFoundedIndustry.adapter = adapter
                 binding.rvFoundedIndustry.isVisible = true
             }
@@ -99,7 +105,7 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
         _binding = null
     }
 
-    override fun onClick(industry: Industries) {
+    override fun onClick(industry: Industry) {
         TODO("Not yet implemented")
     }
 }
