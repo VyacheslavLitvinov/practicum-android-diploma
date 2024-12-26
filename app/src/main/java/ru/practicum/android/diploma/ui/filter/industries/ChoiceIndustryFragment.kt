@@ -34,15 +34,15 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
 
         binding.rvFoundedIndustry.isVisible = true
         viewModel.showIndustries()
-        var filterSharedPreferences: Filter = viewModel.getFilter()
+        // var filterSharedPreferences: Filter = viewModel.getFilter()
         viewModel.industriesState.observe(viewLifecycleOwner) { state ->
             renderState(state)
         }
 
-        if (!filterSharedPreferences.industry?.id.isNullOrEmpty()) {
-            data = filterSharedPreferences.industry
-            adapter?.updateSelection(data!!)
-        }
+//        if (!filterSharedPreferences.industry?.id.isNullOrEmpty()) {
+//            data = filterSharedPreferences.industry
+//           adapter?.updateSelection(data!!)
+ //       }
 
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
@@ -67,8 +67,8 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
         )
 
         binding.btEnter.setOnClickListener {
-            filterSharedPreferences = Filter(industry = data)
-            viewModel.setFilter(filterSharedPreferences)
+  //          filterSharedPreferences = Filter(industry = data)
+  //          viewModel.setFilter(filterSharedPreferences)
             parentFragmentManager.popBackStack()
         }
 
