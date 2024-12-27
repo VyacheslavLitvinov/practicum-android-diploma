@@ -47,7 +47,10 @@ class SearchFragment : Fragment() {
         return _binding?.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         inputEditText = binding.etSearchVacancy
@@ -112,7 +115,7 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
+    
     private fun itemClickListener(item: Vacancy) {
         requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView).isVisible = false
         requireActivity().supportFragmentManager
