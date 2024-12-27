@@ -115,7 +115,7 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    
+
     private fun itemClickListener(item: Vacancy) {
         requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView).isVisible = false
         requireActivity().supportFragmentManager
