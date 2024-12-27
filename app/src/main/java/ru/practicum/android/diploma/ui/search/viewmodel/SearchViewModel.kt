@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import ru.practicum.android.diploma.data.dto.response.VacancySearchResponse
+import ru.practicum.android.diploma.domain.filter.FilterSharedPreferencesInteractor
+import ru.practicum.android.diploma.domain.models.Filter
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.search.SearchInteractor
 import ru.practicum.android.diploma.domain.search.models.SearchParams
@@ -17,7 +19,8 @@ import ru.practicum.android.diploma.util.Salary
 import java.io.IOException
 
 class SearchViewModel(
-    private val searchInteractor: SearchInteractor
+    private val searchInteractor: SearchInteractor,
+    private val filterInteractor: FilterSharedPreferencesInteractor
 ) : ViewModel() {
 
     private val searchScreenStateLiveData = MutableLiveData<SearchScreenState>()
@@ -139,12 +142,7 @@ class SearchViewModel(
     fun onLastItemReached() {
         if (currentPage < maxPages - 1) {
             _isPaginationLoading.postValue(true)
-            searchVacancies(
-                SearchParams(
-                    searchQuery = currentSearchQuery,
-                    numberOfPage = (currentPage + 1).toString()
-                )
-            )
+            convertQueryToSearchParams(currentSearchQuery, true)
         }
     }
 
@@ -180,6 +178,32 @@ class SearchViewModel(
 
     fun updateSearchJob(job: Job?) {
         _searchJob.postValue(job)
+    }
+
+
+    fun convertQueryToSearchParams(s: String, needNextPage: Boolean) {
+        currentPage = this.currentPage
+        var filter = filterInteractor.getFilterSharedPrefs()
+        val searchParams = SearchParams(
+            searchQuery = s,
+            nameOfCityForFilter = filter?.region?.id,
+            nameOfIndustryForFilter = filter?.industry?.id,
+            onlyWithSalary = filter!!.onlyWithSalary,
+            expectedSalary = filter.salary,
+            numberOfPage = (if (needNextPage) currentPage else currentPage + 1).toString()
+        )
+        searchVacancies(searchParams)
+    }
+
+    fun searchParamsForNextPage(searchParams: SearchParams): SearchParams {
+        return SearchParams(
+            searchQuery = searchParams.searchQuery,
+            nameOfCityForFilter = searchParams.nameOfCityForFilter,
+            nameOfIndustryForFilter = searchParams.nameOfIndustryForFilter,
+            onlyWithSalary = searchParams.onlyWithSalary,
+            expectedSalary = searchParams.expectedSalary,
+            numberOfPage = searchParams.numberOfPage + 1
+        )
     }
 
     companion object {

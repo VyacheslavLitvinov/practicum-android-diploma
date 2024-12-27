@@ -54,7 +54,7 @@ class FilterSettingsFragment : Fragment() {
     private fun setFilteredUi(filter: Filter) {
         binding.etCountry.setText(filter.country?.name ?: "")
         binding.etIndustries.setText(filter.industry?.name ?: "")
-        binding.etSalary.setText(if (filter.salary != null && filter.salary != 0) filter.salary.toString() else "")
+        binding.etSalary.setText(if (filter.salary != null && filter.salary != "") filter.salary else "")
         binding.checkBoxSalary.setChecked(filter.onlyWithSalary)
 
     }

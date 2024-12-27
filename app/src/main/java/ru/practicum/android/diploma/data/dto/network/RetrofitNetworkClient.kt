@@ -37,7 +37,8 @@ class RetrofitNetworkClient(
             is CountryRegionsRequest -> getCountryRegions(countryId = dto.countryId)
             is IndustriesRequest -> getFullIndustries()
             else -> {
-                return Response().apply { code = HTTP_BAD_REQUEST_CODE
+                return Response().apply {
+                    code = HTTP_BAD_REQUEST_CODE
                 }
             }
         }
@@ -60,6 +61,7 @@ class RetrofitNetworkClient(
     private suspend fun getSearchVacancy(request: VacancySearchRequest): Response {
         return withContext(Dispatchers.IO) {
             try {
+                Log.d("testt", "${request.searchParams.searchQuery}")
                 hhService
                     .getVacancies(
                         request.searchParams.searchQuery,

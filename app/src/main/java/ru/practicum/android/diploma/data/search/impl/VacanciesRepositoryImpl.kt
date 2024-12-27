@@ -1,5 +1,6 @@
 package ru.practicum.android.diploma.data.search.impl
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
@@ -46,6 +47,7 @@ class VacanciesRepositoryImpl(
     }
 
     private fun createHttpException(code: Int, message: String): HttpException {
+
         return HttpException(
             Response.error<Any>(
                 code,

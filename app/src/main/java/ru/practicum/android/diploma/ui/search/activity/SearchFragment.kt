@@ -64,11 +64,8 @@ class SearchFragment : Fragment() {
 
                 viewModel.updateSearchJob(lifecycleScope.launch {
                     delay(SEARCH_REQUEST_DELAY_IN_MILLISEC)
-                    val searchParams = SearchParams(
-                        searchQuery = s.toString(),
-                        numberOfPage = "0"
-                    )
-                    viewModel.searchVacancies(searchParams)
+
+                    viewModel.convertQueryToSearchParams(s.toString(), false)
                 })
             }
         }
