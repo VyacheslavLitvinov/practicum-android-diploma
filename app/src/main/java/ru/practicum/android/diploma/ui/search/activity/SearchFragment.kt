@@ -34,6 +34,9 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SearchViewModel by viewModel()
+    private var inputEditText: EditText? = null
+    var foundedVacanciesRecyclerView: RecyclerView? = null
+    var foundedVacanciesRecyclerViewAdapter: VacancyAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,10 +47,7 @@ class SearchFragment : Fragment() {
         return _binding?.root
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         inputEditText = binding.etSearchVacancy
