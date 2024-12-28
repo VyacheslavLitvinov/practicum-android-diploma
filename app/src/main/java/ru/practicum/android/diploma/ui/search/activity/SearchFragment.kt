@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -14,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -22,20 +22,19 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchBinding
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.search.models.SearchParams
-import ru.practicum.android.diploma.domain.search.models.SearchScreenState
-import ru.practicum.android.diploma.ui.favorites.VacancyAdapter
+import ru.practicum.android.diploma.ui.favorites.activity.VacancyAdapter
+import ru.practicum.android.diploma.ui.search.viewmodel.SearchScreenState
 import ru.practicum.android.diploma.ui.search.viewmodel.SearchViewModel
+import java.util.Locale
 
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
-    private var previousTextInEditText: String = ""
-    private var searchJob: Job? = null
-    private var inputEditText: EditText? = null
-    private var foundedVacanciesRecyclerView: RecyclerView? = null
-    private var foundedVacanciesRecyclerViewAdapter: VacancyAdapter? = null
     private val binding get() = _binding!!
     private val viewModel: SearchViewModel by viewModel()
+    private var inputEditText: EditText? = null
+    var foundedVacanciesRecyclerView: RecyclerView? = null
+    var foundedVacanciesRecyclerViewAdapter: VacancyAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,50 +54,76 @@ class SearchFragment : Fragment() {
         inputEditText = binding.etSearchVacancy
         val clearButton = binding.ibClearQuery
         foundedVacanciesRecyclerView = binding.rvFoundedVacancies
-
         setupObserversState()
 
         inputEditText?.addTextChangedListener { s ->
             clearButton.isVisible = !s.isNullOrEmpty()
             binding.ibClearSearch.isVisible = s.isNullOrEmpty()
-            searchJob?.cancel()
-            if (!s.isNullOrBlank() && s.toString() != previousTextInEditText) {
+            viewModel.searchJob.value?.cancel()
+            if (s.isNullOrEmpty()) {
+                showEmpty()
+            }
+            if (!s.isNullOrBlank() && s.toString() != viewModel.previousTextInEditText.value) {
                 hidePlaceholders()
-                previousTextInEditText = s.toString()
-                searchJob = lifecycleScope.launch {
+                binding.vacancyCounter.isVisible = false
+                binding.rvFoundedVacancies.isVisible = false
+                viewModel.updatePreviousTextInEditText(s.toString())
+                viewModel.updateSearchJob(lifecycleScope.launch {
                     delay(SEARCH_REQUEST_DELAY_IN_MILLISEC)
-                    searchJobStart(s.toString())
-                }
+                    val searchParams = SearchParams(
+                        searchQuery = s.toString(),
+                        numberOfPage = "0"
+                    )
+                    viewModel.saveSearchParams(searchParams)
+                    viewModel.searchVacancies()
+                })
             }
         }
 
         clearButton.setOnClickListener {
-            clear()
+            clearSearch()
         }
 
+        initAdapter()
+        updateScroll()
+        binding.ivFilter.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_filterSettingsFragment)
+        }
+    }
+
+    private fun initAdapter() {
         val onItemClickListener: (Vacancy) -> Unit = {
-            val bundle = Bundle().apply {
-                putString("vacancy_id", it.id)
-            }
-            findNavController().navigate(R.id.action_searchFragment_to_vacancyFragment, bundle)
+            itemClickListener(it)
         }
-        val onItemLongClickListener: (Vacancy) -> Unit = {
-            // Логика для выполнения по долгому нажатию на элемент
-        }
-
         foundedVacanciesRecyclerViewAdapter = VacancyAdapter(
             onItemClicked = onItemClickListener,
-            onLongItemClicked = onItemLongClickListener
         )
-
         foundedVacanciesRecyclerView?.adapter = foundedVacanciesRecyclerViewAdapter
+    }
 
+    private fun updateScroll() {
         foundedVacanciesRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                positionUpdate(dy)
+
+                if (dy > 0) {
+                    val pos = (foundedVacanciesRecyclerView?.layoutManager as LinearLayoutManager)
+                        .findLastVisibleItemPosition()
+                    val itemsCount = foundedVacanciesRecyclerViewAdapter?.itemCount
+                    if (itemsCount != null && pos >= itemsCount - 1) {
+                        viewModel.onLastItemReached()
+                    }
+                }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (viewModel.getSearchScreenStateLiveData().value is SearchScreenState.Content) {
+            viewModel.searchVacancies()
+        }
     }
 
     override fun onDestroyView() {
@@ -106,27 +131,13 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
-    private fun searchJobStart(s: String) {
-        val searchParams = SearchParams(
-            searchQuery = s,
-            numberOfPage = "0"
-        )
-        viewModel.searchVacancies(searchParams)
+    private fun itemClickListener(item: Vacancy) {
+        val bundle = Bundle()
+        bundle.putString(KEY_FOR_BUNDLE_DATA, item.id)
+        findNavController().navigate(R.id.action_searchFragment_to_vacancyFragment, bundle)
     }
 
-    private fun positionUpdate(dy: Int) {
-        if (dy > 0) {
-            val pos = (foundedVacanciesRecyclerView?.layoutManager as LinearLayoutManager)
-                .findLastVisibleItemPosition()
-            val itemsCount = foundedVacanciesRecyclerViewAdapter?.itemCount
-
-            if (itemsCount != null && pos >= itemsCount - 1) {
-                viewModel.onLastItemReached()
-            }
-        }
-    }
-
-    private fun clear() {
+    private fun clearSearch() {
         inputEditText?.setText(CLEAR_TEXT)
         inputEditText?.requestFocus()
         inputEditText?.let { hideKeyboard(it) }
@@ -148,7 +159,8 @@ class SearchFragment : Fragment() {
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.isVisible = isLoading && !(viewModel.isPaginationLoading.value ?: false)
+            binding.progressBar.isVisible =
+                isLoading && !(viewModel.isPaginationLoading.value ?: false)
         }
 
         viewModel.isPaginationLoading.observe(viewLifecycleOwner) { isPaginationLoading ->
@@ -159,8 +171,21 @@ class SearchFragment : Fragment() {
         }
 
         viewModel.counterVacancy.observe(viewLifecycleOwner) { counter ->
-            binding.vacancyCounter.text = "Найдено $counter вакансий"
+            binding.vacancyCounter.text = String.format(
+                Locale.getDefault(),
+                "Найдено %d вакансий",
+                counter
+            )
+            binding.vacancyCounter.text = viewModel.getVacanciesText(counter)
         }
+
+        viewModel.observeShowToast().observe(viewLifecycleOwner) { message ->
+            showToast(message)
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showLoading() {
@@ -203,7 +228,7 @@ class SearchFragment : Fragment() {
 
     private fun showNotFound() {
         with(binding) {
-            vacancyCounter.text = NOT_FOUND_VACANCY
+            vacancyCounter.text = viewModel.getVacanciesText()
             progressBar.isVisible = false
             vacancyCounter.isVisible = true
             rvFoundedVacancies.isVisible = false
@@ -238,6 +263,6 @@ class SearchFragment : Fragment() {
     companion object {
         private const val CLEAR_TEXT = ""
         private const val SEARCH_REQUEST_DELAY_IN_MILLISEC = 2000L
-        private const val NOT_FOUND_VACANCY = "Таких вакансий нет"
+        private const val KEY_FOR_BUNDLE_DATA = "selected_vacancy_id"
     }
 }

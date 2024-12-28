@@ -62,4 +62,48 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <style name="TransparentEndIconStyle">
+        <item name="background">@android:color/transparent</item>
+        <item name="android:foreground">@android:color/transparent</item>
+    </style>
+
+    <style name="filterTextInputLayoutWork">
+        <item name="boxBackgroundColor">?attr/colorBackgroundFilterTextInputLayout</item>
+    </style>
+
+    <style name="filterTextInputLayout">
+        <item name="boxBackgroundColor">?attr/colorTextLayoutBackground</item>
+    </style>
+
+    <style name="filterTextInputEditText">
+        <item name="android:textColorHint">?attr/colorFilterTextInputLayout</item>
+    </style>
+
+    <style name="countryListItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/item_filter_height</item>
+        <item name="android:paddingVertical">@dimen/item_filter_padding_vertical</item>
+        <item name="android:paddingHorizontal">@dimen/margin16</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="TextInputLayout">
+        <item name="boxBackgroundColor">@color/light_grey</item>
+        <item name="boxBackgroundMode">filled</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="endIconTint">@color/black</item>
+        <item name="expandedHintEnabled">false</item>
+        <item name="hintEnabled">false</item>
+        <item name="placeholderTextAppearance">@style/Medium22Text</item>
+        <item name="placeholderTextColor">@color/hh_grey</item>
+        <item name="android:textColorHint">@color/hh_grey</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAppearance">@style/Regular16Text</item>
+        <item name="android:textCursorDrawable">@drawable/cursor_for_search_edittext</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@drawable/background_for_search_edit_text</item>
+        <item name="android:backgroundTint">@color/another_grey</item>
+    </style>
+
 </resources>
