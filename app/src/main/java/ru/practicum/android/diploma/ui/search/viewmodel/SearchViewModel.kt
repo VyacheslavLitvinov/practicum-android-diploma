@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import ru.practicum.android.diploma.data.dto.response.VacancySearchResponse
 import ru.practicum.android.diploma.domain.filter.FilterSharedPreferencesInteractor
-import ru.practicum.android.diploma.domain.models.Filter
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.search.SearchInteractor
 import ru.practicum.android.diploma.domain.search.models.SearchParams
@@ -180,7 +179,6 @@ class SearchViewModel(
         _searchJob.postValue(job)
     }
 
-
     fun convertQueryToSearchParams(s: String, needNextPage: Boolean) {
         currentPage = this.currentPage
         var filter = filterInteractor.getFilterSharedPrefs()
@@ -193,17 +191,6 @@ class SearchViewModel(
             numberOfPage = (if (needNextPage) currentPage else currentPage + 1).toString()
         )
         searchVacancies(searchParams)
-    }
-
-    fun searchParamsForNextPage(searchParams: SearchParams): SearchParams {
-        return SearchParams(
-            searchQuery = searchParams.searchQuery,
-            nameOfCityForFilter = searchParams.nameOfCityForFilter,
-            nameOfIndustryForFilter = searchParams.nameOfIndustryForFilter,
-            onlyWithSalary = searchParams.onlyWithSalary,
-            expectedSalary = searchParams.expectedSalary,
-            numberOfPage = searchParams.numberOfPage + 1
-        )
     }
 
     companion object {
