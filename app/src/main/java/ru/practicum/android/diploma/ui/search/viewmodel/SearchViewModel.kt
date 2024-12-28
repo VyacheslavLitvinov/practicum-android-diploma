@@ -88,9 +88,7 @@ class SearchViewModel(
                 searchScreenStateLiveData.postValue(SearchScreenState.Content(vacanciesList))
                 currentPage = resp.page
                 maxPages = resp.pages
-                if (searchParams.numberOfPage == "0") {
-                    _counterVacancy.postValue(resp.found)
-                }
+                _counterVacancy.postValue(resp.found)
             } else {
                 searchScreenStateLiveData.postValue(SearchScreenState.NotFound)
                 _counterVacancy.postValue(0)
