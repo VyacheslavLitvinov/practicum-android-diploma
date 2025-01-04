@@ -23,13 +23,14 @@ class ChoiceIndustryViewModel(
     private var latestSearchText: String? = null
     private val _industriesState = MutableLiveData<IndustriesState>()
     val industriesState: LiveData<IndustriesState> get() = _industriesState
+    private var isNetworkError: Boolean = false
 
     fun showIndustries() {
         viewModelScope.launch {
             interactor
                 .getIndustries()
                 .collect { industry ->
-                    processResult(industry)
+                    processResult(industry.first)
                 }
         }
     }
@@ -44,6 +45,9 @@ class ChoiceIndustryViewModel(
                     listIndustry.add(Industry(industries.id, industries.name))
                 }
             }
+        } else {
+            _industriesState.postValue(IndustriesState.Error)
+            isNetworkError = true
         }
         listIndustry.toList()
         renderState(IndustriesState.FoundIndustries(listIndustry))
@@ -63,14 +67,19 @@ class ChoiceIndustryViewModel(
 
     private fun searchIndustries(searchText: String) {
         var filteredIndustries = emptyList<Industry>()
-        filteredIndustries = listIndustry.filter { industry: Industry ->
-            Regex(searchText, RegexOption.IGNORE_CASE).containsMatchIn(industry.name)
-        }.toMutableList()
 
-        if (filteredIndustries.isEmpty()) {
-            renderState(IndustriesState.NothingFound)
+        if (isNetworkError) {
+            _industriesState.postValue(IndustriesState.Error)
         } else {
-            renderState(IndustriesState.FoundIndustries(filteredIndustries))
+            filteredIndustries = listIndustry.filter { industry: Industry ->
+                Regex(searchText, RegexOption.IGNORE_CASE).containsMatchIn(industry.name)
+            }.toMutableList()
+
+            if (filteredIndustries.isEmpty()) {
+                renderState(IndustriesState.NothingFound)
+            } else {
+                renderState(IndustriesState.FoundIndustries(filteredIndustries))
+            }
         }
     }
 

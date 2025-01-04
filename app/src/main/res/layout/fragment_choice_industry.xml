@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.filter.industries.ChoiceIndustryFragment">
 
     <androidx.constraintlayout.widget.Guideline
@@ -21,14 +21,21 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/guideline_indent" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottomGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/bottom_navigation_indent" />
+
     <ImageView
         android:id="@+id/ivBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin24"
+        android:src="@drawable/arrow_back"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/arrow_back"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -46,41 +53,41 @@
         android:id="@+id/flFrameSearchIndustry"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/startGuideline"
+        android:layout_marginTop="27dp"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
-        app:layout_constraintTop_toBottomOf="@id/tvIndustryHeader"
-        android:layout_marginTop="27dp" >
+        app:layout_constraintStart_toStartOf="@id/startGuideline"
+        app:layout_constraintTop_toBottomOf="@id/tvIndustryHeader">
 
         <EditText
             android:id="@+id/etSearchIndustry"
             style="@style/SearchEditText"
-            android:focusableInTouchMode="true"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
             android:hint="@string/enter_industry"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             tools:ignore="Autofill,TextFields" />
 
         <ImageButton
             android:id="@+id/ibClearQuery"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginEnd="@dimen/team_indent"
             android:layout_gravity="end|center"
+            android:layout_marginEnd="@dimen/team_indent"
+            android:backgroundTint="@android:color/transparent"
             android:visibility="gone"
             app:srcCompat="@drawable/search_clear_icon"
-            android:backgroundTint="@android:color/transparent"
             tools:ignore="ContentDescription" />
 
         <ImageButton
             android:id="@+id/ibClearSearch"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginEnd="@dimen/team_indent"
             android:layout_gravity="end|center"
-            app:srcCompat="@drawable/search_icon"
+            android:layout_marginEnd="@dimen/team_indent"
             android:backgroundTint="@android:color/transparent"
+            app:srcCompat="@drawable/search_icon"
             tools:ignore="ContentDescription" />
     </FrameLayout>
 
@@ -88,13 +95,13 @@
         android:id="@+id/rvFoundedIndustry"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="32dp"
         android:paddingEnd="10dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/flFrameSearchIndustry"
         app:layout_constraintBottom_toTopOf="@+id/btEnter"
-        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flFrameSearchIndustry"
         tools:ignore="RtlSymmetry"
         tools:listitem="@layout/industry_item" />
 
@@ -103,14 +110,81 @@
         style="@style/BlueButton"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_layout_height_60"
+        android:layout_marginBottom="@dimen/margin24"
         android:fontFamily="@font/ys_display_medium"
         android:text="@string/button_choice"
         android:textColor="@color/white"
-        android:visibility="gone"
         android:textSize="@dimen/text_size_16"
-        android:layout_marginBottom="@dimen/margin24"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/endGuideline"
         app:layout_constraintStart_toStartOf="@+id/startGuideline" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/hh_blue"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bottomGuideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flFrameSearchIndustry" />
+
+    <LinearLayout
+        android:id="@+id/placeholderNotFound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin16"
+            android:src="@drawable/placeholder_not_found"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            style="@style/Medium22Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="@string/industry_not_found" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/placeholderNotConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin16"
+            android:src="@drawable/placeholder_not_found_regions"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            style="@style/Medium22Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/not_found_region" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

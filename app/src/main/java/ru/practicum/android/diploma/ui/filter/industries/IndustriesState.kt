@@ -5,4 +5,6 @@ import ru.practicum.android.diploma.domain.models.Industry
 sealed interface IndustriesState {
     data object NothingFound : IndustriesState
     data class FoundIndustries(val industries: MutableList<Industry>) : IndustriesState
+    object Error : IndustriesState
+    object Loading : IndustriesState
 }

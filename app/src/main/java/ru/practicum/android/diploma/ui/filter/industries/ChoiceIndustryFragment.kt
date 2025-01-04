@@ -84,10 +84,29 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
                 adapter?.updateIndustries(state.industries as List<Industry>)
                 binding.rvFoundedIndustry.adapter = adapter
                 binding.rvFoundedIndustry.isVisible = true
+                binding.progressBar.isVisible = false
+                binding.placeholderNotFound.isVisible = false
+                binding.placeholderNotConnect.isVisible = false
             }
 
             is IndustriesState.NothingFound -> {
                 adapter?.updateIndustries(emptyList())
+                binding.placeholderNotFound.isVisible = true
+                binding.rvFoundedIndustry.isVisible = false
+            }
+
+            is IndustriesState.Error -> {
+                binding.rvFoundedIndustry.isVisible = false
+                binding.placeholderNotConnect.isVisible = true
+                binding.placeholderNotFound.isVisible = false
+            }
+
+            is IndustriesState.Loading -> {
+                binding.progressBar.isVisible = true
+                binding.rvFoundedIndustry.isVisible = false
+                binding.placeholderNotConnect.isVisible = false
+                binding.placeholderNotFound.isVisible = false
+
             }
         }
     }
