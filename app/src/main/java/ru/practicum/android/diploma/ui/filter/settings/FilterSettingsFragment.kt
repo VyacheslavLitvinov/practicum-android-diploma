@@ -47,7 +47,13 @@ class FilterSettingsFragment : Fragment() {
         }
 
         binding.etCountry.setOnClickListener {
-            findNavController().navigate(R.id.action_filterSettingsFragment_to_choiceWorkplaceFragment)
+            if (binding.etCountry.text?.isNotEmpty() == true) {
+                val bundle = Bundle()
+                bundle.putBoolean(KEY_FOR_BUNDLE_DATA, true)
+                findNavController().navigate(R.id.action_filterSettingsFragment_to_choiceWorkplaceFragment, bundle)
+            } else {
+                findNavController().navigate(R.id.action_filterSettingsFragment_to_choiceWorkplaceFragment)
+            }
         }
 
         binding.ivBack.setOnClickListener {
@@ -137,5 +143,9 @@ class FilterSettingsFragment : Fragment() {
             binding.checkBoxSalary.setChecked(filter.onlyWithSalary!!)
         }
         filterSave = filter
+    }
+
+    companion object {
+        private const val KEY_FOR_BUNDLE_DATA = "region_was_selected"
     }
 }
