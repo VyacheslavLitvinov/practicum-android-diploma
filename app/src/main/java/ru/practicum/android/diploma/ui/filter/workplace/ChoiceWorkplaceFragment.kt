@@ -55,6 +55,15 @@ class ChoiceWorkplaceFragment : Fragment() {
 
         binding.etCountry.setText(countryModel?.name)
         binding.etRegion.setText(regionModel?.name)
+
+        if (arguments?.getBoolean(KEY_FOR_BUNDLE_DATA) != null) {
+            arguments = null
+            viewModel.getChoiceWorkplaceScreenStateLiveData.observe(viewLifecycleOwner) { screenState ->
+                binding.etCountry.setText(screenState?.country)
+                binding.etRegion.setText(screenState?.region)
+            }
+            viewModel.getFilter()
+        }
     }
 
     override fun onDestroyView() {
@@ -230,5 +239,9 @@ class ChoiceWorkplaceFragment : Fragment() {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val KEY_FOR_BUNDLE_DATA = "region_was_selected"
     }
 }
