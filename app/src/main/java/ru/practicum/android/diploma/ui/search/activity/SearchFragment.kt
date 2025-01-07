@@ -116,7 +116,8 @@ class SearchFragment : Fragment() {
         super.onResume()
 
         viewModel.updateFilterState()
-        if (viewModel.getSearchScreenStateLiveData().value is SearchScreenState.Content) {
+        if (viewModel.getSearchScreenStateLiveData().value is SearchScreenState.Content ||
+            viewModel.getSearchScreenStateLiveData().value is SearchScreenState.NotFound) {
             viewModel.searchVacancies()
         }
     }

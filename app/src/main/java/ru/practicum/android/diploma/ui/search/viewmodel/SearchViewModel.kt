@@ -93,6 +93,10 @@ class SearchViewModel(
                 }
             currentSearchParams.nameOfIndustryForFilter = filter.industry?.id
         } else {
+            currentSearchParams.expectedSalary = null
+            currentSearchParams.onlyWithSalary = false
+            currentSearchParams.nameOfCityForFilter = null
+            currentSearchParams.nameOfIndustryForFilter = null
             filterButtonStateLiveData.postValue(FilterButtonState.FilterOff)
         }
     }
