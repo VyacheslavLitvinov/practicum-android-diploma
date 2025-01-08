@@ -1,16 +1,14 @@
 package ru.practicum.android.diploma.ui.filter.settings
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import ru.practicum.android.diploma.domain.filter.FilterSharedPreferencesInteractor
 import ru.practicum.android.diploma.domain.models.Filter
 
 class FilterSettingsViewModel(
-    application: Application,
     private val interactor: FilterSharedPreferencesInteractor
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _counterFilter = MutableLiveData<FilterSettingsState>()
     val counterFilter: LiveData<FilterSettingsState> get() = _counterFilter
@@ -28,7 +26,12 @@ class FilterSettingsViewModel(
     }
 
     fun saveFilterFromUi(filter: Filter) {
-        interactor.setFilterSharedPrefs(filter)
+        if (filter.country == null && filter.region == null && filter.industry == null &&
+            filter.salary == null && filter.onlyWithSalary == false) {
+            interactor.deleteFilterSharedPrefs()
+        } else {
+            interactor.setFilterSharedPrefs(filter)
+        }
     }
 
     fun clearFilters() {
