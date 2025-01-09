@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <RadioButton
-        android:layout_margin="11dp"
+        android:layout_marginTop="@dimen/padding_10"
         android:id="@+id/radioButton"
         style="@style/Regular16Text"
         android:layout_width="match_parent"
