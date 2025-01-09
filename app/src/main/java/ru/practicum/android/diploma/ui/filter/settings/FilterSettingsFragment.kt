@@ -16,7 +16,6 @@ import ru.practicum.android.diploma.databinding.FragmentFilterSettingsBinding
 import ru.practicum.android.diploma.domain.models.Filter
 import java.util.Locale
 
-
 class FilterSettingsFragment : Fragment() {
 
     private var _binding: FragmentFilterSettingsBinding? = null
@@ -204,6 +203,11 @@ class FilterSettingsFragment : Fragment() {
             binding.checkBoxSalary.setChecked(filter.onlyWithSalary!!)
         }
         filterSave = filter
+        setInitialStateOfTextInputLayouts()
+        setTextChangedListeners()
+    }
+
+    private fun setInitialStateOfTextInputLayouts() {
         with(binding.tilCountry) {
             if (binding.etCountry.text?.isNotEmpty() == true) {
                 setEndIconDrawable(R.drawable.search_clear_icon)
@@ -238,6 +242,9 @@ class FilterSettingsFragment : Fragment() {
                 defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
             }
         }
+    }
+
+    private fun setTextChangedListeners() {
         binding.etCountry.doAfterTextChanged { text ->
             with(binding.tilCountry) {
                 if (text?.isNotEmpty() == true) {

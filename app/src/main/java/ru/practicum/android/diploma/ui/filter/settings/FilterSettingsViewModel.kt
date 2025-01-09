@@ -26,8 +26,8 @@ class FilterSettingsViewModel(
     }
 
     fun saveFilterFromUi(filter: Filter) {
-        if (filter.country == null && filter.region == null && filter.industry == null &&
-            filter.salary == null && filter.onlyWithSalary == false) {
+        val isRegionNull = filter.country == null && filter.region == null
+        if (isRegionNull && filter.industry == null && filter.salary == null && filter.onlyWithSalary == false) {
             interactor.deleteFilterSharedPrefs()
         } else {
             interactor.setFilterSharedPrefs(filter)
