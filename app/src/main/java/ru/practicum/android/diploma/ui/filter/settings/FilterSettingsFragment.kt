@@ -15,7 +15,10 @@ import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterSettingsBinding
+import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Filter
+import ru.practicum.android.diploma.domain.models.Industry
+import ru.practicum.android.diploma.domain.models.Region
 import java.util.Locale
 
 class FilterSettingsFragment : Fragment() {
@@ -37,10 +40,20 @@ class FilterSettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.currentFilter()
+        setTextChangedListeners(binding.tilCountry, binding.etCountry)
+        setTextChangedListeners(binding.tilIndustries, binding.etIndustries)
+        setBackStackListeners()
+
         viewModel.counterFilter.observe(viewLifecycleOwner) { state ->
             renderState(state)
         }
+
+        viewModel.getApplyResetButtonsStateLiveData.observe(viewLifecycleOwner) { stateOfButtons ->
+            binding.btApply.isVisible = stateOfButtons.visibility
+            binding.btReset.isVisible = stateOfButtons.visibility
+        }
+
+        viewModel.currentFilter()
 
         binding.btApply.setOnClickListener {
             applyFilter()
@@ -78,19 +91,11 @@ class FilterSettingsFragment : Fragment() {
         val checkBox = binding.checkBoxSalary.isChecked
 
         if (binding.etSalary.text.isNullOrEmpty()) {
-            filterSave = Filter(onlyWithSalary = checkBox)
+            viewModel.saveFilterFromUi(null, checkBox)
         } else {
             val salary = binding.etSalary.text.toString().toInt()
-            filterSave = Filter(
-                salary = salary,
-                onlyWithSalary = checkBox
-            )
+            viewModel.saveFilterFromUi(salary, checkBox)
         }
-        viewModel.saveFilterFromUi(
-            filterSave!!,
-            binding.etCountry.text?.toString(),
-            binding.etIndustries.text?.toString()
-        )
         findNavController().popBackStack()
     }
 
@@ -98,24 +103,12 @@ class FilterSettingsFragment : Fragment() {
         when (state) {
             is FilterSettingsState.FilterSettings -> {
                 setFilteredUi(state.filter)
-                binding.btApply.isVisible = true
-                binding.btReset.isVisible = true
             }
 
             is FilterSettingsState.Empty -> {
-                clearFilter()
                 setEmptyFilterUi()
-                binding.btReset.isVisible = false
-                binding.btApply.isVisible = false
             }
         }
-    }
-
-    private fun clearFilter() {
-        binding.etCountry.setText("")
-        binding.etIndustries.setText("")
-        binding.etSalary.setText("")
-        binding.checkBoxSalary.setChecked(false)
     }
 
     private fun checkVisibilityOfApplyAndResetButtonsForEmptyState() {
@@ -128,9 +121,6 @@ class FilterSettingsFragment : Fragment() {
     }
 
     private fun setEmptyFilterUi() {
-        setTextChangedListeners(binding.tilCountry, binding.etCountry)
-        setTextChangedListeners(binding.tilIndustries, binding.etIndustries)
-
         binding.checkBoxSalary.setOnCheckedChangeListener { _, _ ->
             checkVisibilityOfApplyAndResetButtonsForEmptyState()
         }
@@ -140,9 +130,6 @@ class FilterSettingsFragment : Fragment() {
     }
 
     private fun setFilteredUi(filter: Filter) {
-        setTextChangedListeners(binding.tilCountry, binding.etCountry)
-        setTextChangedListeners(binding.tilIndustries, binding.etIndustries)
-
         if (filter.region?.name.isNullOrEmpty()) {
             binding.etCountry.setText(filter.country?.name ?: "")
         } else {
@@ -160,7 +147,6 @@ class FilterSettingsFragment : Fragment() {
 
     private fun setTextChangedListeners(til: TextInputLayout, et: TextInputEditText) {
         et.doAfterTextChanged { text ->
-            checkVisibilityOfApplyAndResetButtonsForEmptyState()
             if (text?.isNotEmpty() == true) {
                 til.setEndIconDrawable(R.drawable.search_clear_icon)
                 til.setEndIconOnClickListener {
@@ -186,6 +172,34 @@ class FilterSettingsFragment : Fragment() {
         }
     }
 
+    private fun setBackStackListeners() {
+        with(findNavController().currentBackStackEntry?.savedStateHandle) {
+            this?.getLiveData<Country?>(COUNTRY_BACKSTACK_KEY)?.observe(viewLifecycleOwner) { country ->
+                viewModel.setSelectedCountry(country)
+                binding.etCountry.setText(country?.name ?: "")
+            }
+
+            this?.getLiveData<Region?>(REGION_BACKSTACK_KEY)?.observe(viewLifecycleOwner) { region ->
+                viewModel.setSelectedRegion(region)
+                if (region != null) {
+                    binding.etCountry.setText(
+                        String.format(
+                            Locale.getDefault(),
+                            "%s, %s",
+                            binding.etCountry.text?.toString(),
+                            region.name
+                        )
+                    )
+                }
+            }
+
+            this?.getLiveData<Industry?>(INDUSTRY_BACKSTACK_KEY)?.observe(viewLifecycleOwner) { industry ->
+                viewModel.setSelectedIndustry(industry)
+                binding.etIndustries.setText(industry?.name)
+            }
+        }
+    }
+
     private fun isDarkTheme(): Boolean {
         return requireActivity().resources.configuration.uiMode and
             Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
@@ -193,5 +207,8 @@ class FilterSettingsFragment : Fragment() {
 
     companion object {
         private const val KEY_FOR_BUNDLE_DATA = "region_was_selected"
+        private const val COUNTRY_BACKSTACK_KEY = "country_key"
+        private const val REGION_BACKSTACK_KEY = "region_key"
+        private const val INDUSTRY_BACKSTACK_KEY = "industry_key"
     }
 }

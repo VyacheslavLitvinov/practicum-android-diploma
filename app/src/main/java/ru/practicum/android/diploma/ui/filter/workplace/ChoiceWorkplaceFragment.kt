@@ -20,9 +20,7 @@ import ru.practicum.android.diploma.databinding.FragmentChoiceWorkplaceBinding
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Filter
 import ru.practicum.android.diploma.domain.models.Region
-import ru.practicum.android.diploma.ui.filter.workplace.country.ChoiceCountryFragment.Companion.COUNTRY_BACKSTACK_KEY
 import ru.practicum.android.diploma.ui.filter.workplace.region.ChoiceRegionFragment
-import ru.practicum.android.diploma.ui.filter.workplace.region.ChoiceRegionFragment.Companion.REGION_BACKSTACK_KEY
 
 class ChoiceWorkplaceFragment : Fragment() {
 
@@ -106,7 +104,8 @@ class ChoiceWorkplaceFragment : Fragment() {
             } else {
                 Filter(country = countryModel, region = regionModel)
             }
-            viewModel.setFilter(filterSettings)
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(COUNTRY_BACKSTACK_KEY, filterSettings.country)
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(REGION_BACKSTACK_KEY, filterSettings.region)
             findNavController().popBackStack()
         }
 
@@ -274,5 +273,7 @@ class ChoiceWorkplaceFragment : Fragment() {
 
     companion object {
         private const val KEY_FOR_BUNDLE_DATA = "region_was_selected"
+        private const val COUNTRY_BACKSTACK_KEY = "country_key"
+        private const val REGION_BACKSTACK_KEY = "region_key"
     }
 }
