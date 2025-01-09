@@ -78,7 +78,7 @@ class FilterSettingsViewModel(
         applyResetButtonsStateLiveData.postValue(
             ApplyResetButtonsState(
                 updatedFilter.country != null || updatedFilter.region != null || updatedFilter.industry != null ||
-                updatedFilter.salary != null || updatedFilter.onlyWithSalary == true
+                    updatedFilter.salary != null || updatedFilter.onlyWithSalary == true
             )
         )
     }

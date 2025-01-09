@@ -81,7 +81,8 @@ class FilterSharedPreferencesRepositoryImpl(private val sharedPrefs: SharedPrefe
         currentFilter.country = null
         currentFilter.region = null
 
-        if ((currentFilter.onlyWithSalary == false || currentFilter.onlyWithSalary == null) && isAllFieldsEmpty(currentFilter)) {
+        if ((currentFilter.onlyWithSalary == false || currentFilter.onlyWithSalary == null) &&
+            isAllFieldsEmpty(currentFilter)) {
             clearFilterSharedPrefs()
         } else {
             val updatedJson = Gson().toJson(currentFilter)
@@ -101,7 +102,8 @@ class FilterSharedPreferencesRepositoryImpl(private val sharedPrefs: SharedPrefe
 
         currentFilter.industry = null
 
-        if ((currentFilter.onlyWithSalary == false || currentFilter.onlyWithSalary == null) && isAllFieldsEmpty(currentFilter)) {
+        if ((currentFilter.onlyWithSalary == false ||
+                currentFilter.onlyWithSalary == null) && isAllFieldsEmpty(currentFilter)) {
             clearFilterSharedPrefs()
         } else {
             val updatedJson = Gson().toJson(currentFilter)
