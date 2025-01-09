@@ -74,8 +74,7 @@ class FilterSettingsViewModel(
     }
 
     fun saveFilterFromUi() {
-        if (isFieldsEmpty() && (updatedFilter.onlyWithSalary == false || updatedFilter.onlyWithSalary == null) &&
-            updatedFilter.salary == null) {
+        if (isFieldsEmpty() && isOnlyWithSalaryEmpty() && updatedFilter.salary == null) {
             interactor.deleteFilterSharedPrefs()
         } else {
             interactor.setFilterSharedPrefs(updatedFilter)
@@ -96,6 +95,10 @@ class FilterSettingsViewModel(
                     updatedFilter.salary != null || updatedFilter.onlyWithSalary == true
             )
         )
+    }
+
+    private fun isOnlyWithSalaryEmpty(): Boolean {
+        return updatedFilter.onlyWithSalary == false || updatedFilter.onlyWithSalary == null
     }
 
     private fun setVisibilityOfApplyResetButtons(visible: Boolean) {
