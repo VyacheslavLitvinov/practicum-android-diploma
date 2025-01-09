@@ -21,7 +21,6 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
     private var data: Industry? = null
     private var filterSharedPreferences: Filter? = null
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
