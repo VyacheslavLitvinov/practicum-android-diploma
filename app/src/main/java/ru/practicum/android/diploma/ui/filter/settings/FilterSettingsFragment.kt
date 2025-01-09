@@ -24,7 +24,6 @@ import java.util.Locale
 class FilterSettingsFragment : Fragment() {
 
     private var _binding: FragmentFilterSettingsBinding? = null
-    private var filterSave: Filter? = null
 
     private val binding get() = _binding!!
     private val viewModel by viewModel<FilterSettingsViewModel>()
@@ -139,11 +138,22 @@ class FilterSettingsFragment : Fragment() {
             )
         }
         binding.etIndustries.setText(filter.industry?.name ?: "")
+
+        binding.checkBoxSalary.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.setSelectedOnlyWithSalary(isChecked)
+        }
+        binding.etSalary.doAfterTextChanged { text ->
+            if (!text.isNullOrEmpty()) {
+                viewModel.setSelectedSalary(text.toString().toInt())
+            } else {
+                viewModel.setSelectedSalary(null)
+            }
+        }
+
         binding.etSalary.setText(if (filter.salary != null && filter.salary != 0) filter.salary.toString() else "")
         if (filter.onlyWithSalary != null) {
             binding.checkBoxSalary.setChecked(filter.onlyWithSalary!!)
         }
-        filterSave = filter
     }
 
     private fun setTextChangedListeners(til: TextInputLayout, et: TextInputEditText) {

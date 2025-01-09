@@ -13,7 +13,7 @@ class FilterSettingsViewModel(
     private val interactor: FilterSharedPreferencesInteractor
 ) : ViewModel() {
 
-    private val updatedFilter = Filter(onlyWithSalary = false)
+    private var updatedFilter = Filter(onlyWithSalary = false)
 
     private val _counterFilter = MutableLiveData<FilterSettingsState>()
     val counterFilter: LiveData<FilterSettingsState> get() = _counterFilter
@@ -23,7 +23,9 @@ class FilterSettingsViewModel(
 
     fun setSelectedCountry(countryForSave: Country?) {
         updatedFilter.country = countryForSave
-        setVisibilityOfApplyResetButtons(true)
+        if (_counterFilter.value is FilterSettingsState.Empty) {
+            checkVisibilityOfButtons()
+        }
     }
 
     fun setSelectedRegion(regionForSave: Region?) {
@@ -32,17 +34,23 @@ class FilterSettingsViewModel(
 
     fun setSelectedIndustry(industryForSave: Industry?) {
         updatedFilter.industry = industryForSave
-        setVisibilityOfApplyResetButtons(true)
+        if (_counterFilter.value is FilterSettingsState.Empty) {
+            checkVisibilityOfButtons()
+        }
     }
 
     fun setSelectedOnlyWithSalary(withSalary: Boolean) {
         updatedFilter.onlyWithSalary = withSalary
-        setVisibilityOfApplyResetButtons(withSalary)
+        if (_counterFilter.value is FilterSettingsState.Empty) {
+            checkVisibilityOfButtons()
+        }
     }
 
     fun setSelectedSalary(sal: Int?) {
         updatedFilter.salary = sal
-        setVisibilityOfApplyResetButtons(true)
+        if (_counterFilter.value is FilterSettingsState.Empty) {
+            checkVisibilityOfButtons()
+        }
     }
 
     fun clearIndustry() {
@@ -57,11 +65,17 @@ class FilterSettingsViewModel(
     }
 
     fun currentFilter() {
-        processResult(interactor.getFilterSharedPrefs())
+        val filterFromSharPref = interactor.getFilterSharedPrefs()
+        if (filterFromSharPref != null) {
+            updatedFilter = filterFromSharPref
+            setVisibilityOfApplyResetButtons(true)
+        }
+        processResult(filterFromSharPref)
     }
 
     fun saveFilterFromUi() {
-        if (isFieldsEmpty() && updatedFilter.onlyWithSalary == false && updatedFilter.salary == null) {
+        if (isFieldsEmpty() && (updatedFilter.onlyWithSalary == false || updatedFilter.onlyWithSalary == null) &&
+            updatedFilter.salary == null) {
             interactor.deleteFilterSharedPrefs()
         } else {
             interactor.setFilterSharedPrefs(updatedFilter)
@@ -70,6 +84,7 @@ class FilterSettingsViewModel(
 
     fun clearFilters() {
         interactor.deleteFilterSharedPrefs()
+        updatedFilter = Filter()
         renderState(FilterSettingsState.Empty)
         setVisibilityOfApplyResetButtons(false)
     }
