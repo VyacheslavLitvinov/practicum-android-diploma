@@ -161,19 +161,23 @@ class FilterSettingsFragment : Fragment() {
                         viewModel.checkVisibilityOfButtons()
                     }
                 }
-                til.defaultHintTextColor = ColorStateList.valueOf(
-                    if (isDarkTheme()) {
-                        resources.getColor(R.color.white, null)
-                    } else {
-                        resources.getColor(R.color.black, null)
-                    }
-                )
+                til.defaultHintTextColor = getCorrectColorOfHint()
             } else {
                 til.setEndIconDrawable(R.drawable.ic_arrow_right)
                 til.setEndIconOnClickListener {}
                 til.defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
             }
         }
+    }
+
+    private fun getCorrectColorOfHint(): ColorStateList {
+        return ColorStateList.valueOf(
+            if (isDarkTheme()) {
+                resources.getColor(R.color.white, null)
+            } else {
+                resources.getColor(R.color.black, null)
+            }
+        )
     }
 
     private fun setBackStackListeners() {
