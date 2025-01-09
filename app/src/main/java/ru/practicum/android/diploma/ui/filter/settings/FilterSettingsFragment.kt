@@ -19,13 +19,16 @@ import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Filter
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.Region
+import ru.practicum.android.diploma.domain.models.WorkplaceFilter
 import java.util.Locale
 
 class FilterSettingsFragment : Fragment() {
 
     private var _binding: FragmentFilterSettingsBinding? = null
     private var filterSave: Filter? = null
-
+    private var industrySave: Industry? = null
+    private var countrySave: String? = null
+    private var regionSave: String? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<FilterSettingsViewModel>()
 
@@ -66,13 +69,9 @@ class FilterSettingsFragment : Fragment() {
         }
 
         binding.etCountry.setOnClickListener {
-            if (binding.etCountry.text?.isNotEmpty() == true) {
-                val bundle = Bundle()
-                bundle.putBoolean(KEY_FOR_BUNDLE_DATA, true)
-                findNavController().navigate(R.id.action_filterSettingsFragment_to_choiceWorkplaceFragment, bundle)
-            } else {
-                findNavController().navigate(R.id.action_filterSettingsFragment_to_choiceWorkplaceFragment)
-            }
+            val workplaceSave = WorkplaceFilter(regionSave, countrySave)
+            val bundleWorkplace = Bundle().apply { putParcelable(KEY_FOR_BUNDLE_DATA, workplaceSave) }
+            findNavController().navigate(R.id.action_filterSettingsFragment_to_choiceWorkplaceFragment, bundleWorkplace)
         }
 
         binding.ivBack.setOnClickListener {
@@ -80,7 +79,8 @@ class FilterSettingsFragment : Fragment() {
         }
 
         binding.etIndustries.setOnClickListener {
-            findNavController().navigate(R.id.action_filterSettingsFragment_to_choiceIndustryFragment)
+            val bundleIndustry = Bundle().apply { putString(INDUSTRY_KEY, industrySave?.id) }
+            findNavController().navigate(R.id.action_filterSettingsFragment_to_choiceIndustryFragment, bundleIndustry)
         }
     }
 
@@ -186,10 +186,12 @@ class FilterSettingsFragment : Fragment() {
                 viewModel.setSelectedCountry(country)
                 binding.etCountry.setText(country?.name ?: "")
                 viewModel.checkVisibilityOfButtons()
+                countrySave = country?.name
             }
 
             this?.getLiveData<Region?>(REGION_BACKSTACK_KEY)?.observe(viewLifecycleOwner) { region ->
                 viewModel.setSelectedRegion(region)
+                regionSave = region?.name
                 if (region != null) {
                     binding.etCountry.setText(
                         String.format(
@@ -207,6 +209,7 @@ class FilterSettingsFragment : Fragment() {
                 viewModel.setSelectedIndustry(industry)
                 binding.etIndustries.setText(industry?.name)
                 viewModel.checkVisibilityOfButtons()
+                industrySave = industry
             }
         }
     }
@@ -221,5 +224,6 @@ class FilterSettingsFragment : Fragment() {
         private const val COUNTRY_BACKSTACK_KEY = "country_key"
         private const val REGION_BACKSTACK_KEY = "region_key"
         private const val INDUSTRY_BACKSTACK_KEY = "industry_key"
+        private const val INDUSTRY_KEY = "industry"
     }
 }
