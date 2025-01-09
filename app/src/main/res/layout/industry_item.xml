@@ -12,7 +12,7 @@
         android:buttonTint="@color/hh_blue"
         android:ellipsize="end"
         android:layoutDirection="rtl"
-        android:maxLines="3"
+        android:maxLines="2"
         android:paddingHorizontal="@dimen/margin16"
         android:text="@string/industry_header"
         app:layout_constraintEnd_toEndOf="parent"
