@@ -121,22 +121,24 @@ class FilterSettingsFragment : Fragment() {
             binding.btReset.isVisible = text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
                 binding.etIndustries.text?.isNotEmpty() == true ||
                 binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
-            if (text?.isNotEmpty() == true) {
-                binding.tilCountry.setEndIconDrawable(R.drawable.search_clear_icon)
-                binding.tilCountry.setEndIconOnClickListener {
-                    text.clear()
-                }
-                binding.tilCountry.defaultHintTextColor = ColorStateList.valueOf(
-                    if (isDarkTheme()) {
-                        resources.getColor(R.color.white, null)
-                    } else {
-                        resources.getColor(R.color.black, null)
+            with(binding.tilCountry) {
+                if (text?.isNotEmpty() == true) {
+                    setEndIconDrawable(R.drawable.search_clear_icon)
+                    setEndIconOnClickListener {
+                        text.clear()
                     }
-                )
-            } else {
-                binding.tilCountry.setEndIconDrawable(R.drawable.ic_arrow_right)
-                binding.tilCountry.setEndIconOnClickListener {}
-                binding.tilCountry.defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+                    defaultHintTextColor = ColorStateList.valueOf(
+                        if (isDarkTheme()) {
+                            resources.getColor(R.color.white, null)
+                        } else {
+                            resources.getColor(R.color.black, null)
+                        }
+                    )
+                } else {
+                    setEndIconDrawable(R.drawable.ic_arrow_right)
+                    setEndIconOnClickListener {}
+                    defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+                }
             }
         }
         binding.etIndustries.doAfterTextChanged { text ->
@@ -146,22 +148,24 @@ class FilterSettingsFragment : Fragment() {
             binding.btReset.isVisible = text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
                 binding.etCountry.text?.isNotEmpty() == true ||
                 binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
-            if (text?.isNotEmpty() == true) {
-                binding.tilIndustries.setEndIconDrawable(R.drawable.search_clear_icon)
-                binding.tilIndustries.setEndIconOnClickListener {
-                    text.clear()
-                }
-                binding.tilIndustries.defaultHintTextColor = ColorStateList.valueOf(
-                    if (isDarkTheme()) {
-                        resources.getColor(R.color.white, null)
-                    } else {
-                        resources.getColor(R.color.black, null)
+            with(binding.tilIndustries) {
+                if (text?.isNotEmpty() == true) {
+                    setEndIconDrawable(R.drawable.search_clear_icon)
+                    setEndIconOnClickListener {
+                        text.clear()
                     }
-                )
-            } else {
-                binding.tilIndustries.setEndIconDrawable(R.drawable.ic_arrow_right)
-                binding.tilIndustries.setEndIconOnClickListener {}
-                binding.tilIndustries.defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+                    defaultHintTextColor = ColorStateList.valueOf(
+                        if (isDarkTheme()) {
+                            resources.getColor(R.color.white, null)
+                        } else {
+                            resources.getColor(R.color.black, null)
+                        }
+                    )
+                } else {
+                    setEndIconDrawable(R.drawable.ic_arrow_right)
+                    setEndIconOnClickListener {}
+                    defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+                }
             }
         }
         binding.checkBoxSalary.setOnCheckedChangeListener { _, isChecked ->
@@ -200,41 +204,13 @@ class FilterSettingsFragment : Fragment() {
             binding.checkBoxSalary.setChecked(filter.onlyWithSalary!!)
         }
         filterSave = filter
-        if (binding.etCountry.text?.isNotEmpty() == true) {
-            binding.tilCountry.setEndIconDrawable(R.drawable.search_clear_icon)
-            binding.tilCountry.setEndIconOnClickListener {
-                binding.etCountry.setText("")
-            }
-            binding.tilCountry.defaultHintTextColor = ColorStateList.valueOf(
-                if (isDarkTheme()) {
-                    resources.getColor(R.color.white, null)
-                } else {
-                    resources.getColor(R.color.black, null)
+        with(binding.tilCountry) {
+            if (binding.etCountry.text?.isNotEmpty() == true) {
+                setEndIconDrawable(R.drawable.search_clear_icon)
+                setEndIconOnClickListener {
+                    binding.etCountry.setText("")
                 }
-            )
-        } else {
-            binding.tilCountry.defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
-        }
-        if (binding.etIndustries.text?.isNotEmpty() == true) {
-            binding.tilIndustries.setEndIconDrawable(R.drawable.search_clear_icon)
-            binding.tilIndustries.setEndIconOnClickListener {
-                binding.etIndustries.setText("")
-            }
-            binding.tilIndustries.defaultHintTextColor = ColorStateList.valueOf(
-                if (isDarkTheme()) {
-                    resources.getColor(R.color.white, null)
-                } else {
-                    resources.getColor(R.color.black, null)
-                }
-            )
-        }
-        binding.etCountry.doAfterTextChanged { text ->
-            if (text?.isNotEmpty() == true) {
-                binding.tilCountry.setEndIconDrawable(R.drawable.search_clear_icon)
-                binding.tilCountry.setEndIconOnClickListener {
-                    text.clear()
-                }
-                binding.tilCountry.defaultHintTextColor = ColorStateList.valueOf(
+                defaultHintTextColor = ColorStateList.valueOf(
                     if (isDarkTheme()) {
                         resources.getColor(R.color.white, null)
                     } else {
@@ -242,28 +218,66 @@ class FilterSettingsFragment : Fragment() {
                     }
                 )
             } else {
-                binding.tilCountry.setEndIconDrawable(R.drawable.ic_arrow_right)
-                binding.tilCountry.setEndIconOnClickListener {}
-                binding.tilCountry.defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+                defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+            }
+        }
+        with(binding.tilIndustries) {
+            if (binding.etIndustries.text?.isNotEmpty() == true) {
+                setEndIconDrawable(R.drawable.search_clear_icon)
+                setEndIconOnClickListener {
+                    binding.etIndustries.setText("")
+                }
+                defaultHintTextColor = ColorStateList.valueOf(
+                    if (isDarkTheme()) {
+                        resources.getColor(R.color.white, null)
+                    } else {
+                        resources.getColor(R.color.black, null)
+                    }
+                )
+            } else {
+                defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+            }
+        }
+        binding.etCountry.doAfterTextChanged { text ->
+            with(binding.tilCountry) {
+                if (text?.isNotEmpty() == true) {
+                    setEndIconDrawable(R.drawable.search_clear_icon)
+                    setEndIconOnClickListener {
+                        text.clear()
+                    }
+                    defaultHintTextColor = ColorStateList.valueOf(
+                        if (isDarkTheme()) {
+                            resources.getColor(R.color.white, null)
+                        } else {
+                            resources.getColor(R.color.black, null)
+                        }
+                    )
+                } else {
+                    setEndIconDrawable(R.drawable.ic_arrow_right)
+                    setEndIconOnClickListener {}
+                    defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+                }
             }
         }
         binding.etIndustries.doAfterTextChanged { text ->
-            if (text?.isNotEmpty() == true) {
-                binding.tilIndustries.setEndIconDrawable(R.drawable.search_clear_icon)
-                binding.tilIndustries.setEndIconOnClickListener {
-                    text.clear()
-                }
-                binding.tilIndustries.defaultHintTextColor = ColorStateList.valueOf(
-                    if (isDarkTheme()) {
-                        resources.getColor(R.color.white, null)
-                    } else {
-                        resources.getColor(R.color.black, null)
+            with(binding.tilIndustries) {
+                if (text?.isNotEmpty() == true) {
+                    setEndIconDrawable(R.drawable.search_clear_icon)
+                    setEndIconOnClickListener {
+                        text.clear()
                     }
-                )
-            } else {
-                binding.tilIndustries.setEndIconDrawable(R.drawable.ic_arrow_right)
-                binding.tilIndustries.setEndIconOnClickListener {}
-                binding.tilIndustries.defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+                    defaultHintTextColor = ColorStateList.valueOf(
+                        if (isDarkTheme()) {
+                            resources.getColor(R.color.white, null)
+                        } else {
+                            resources.getColor(R.color.black, null)
+                        }
+                    )
+                } else {
+                    setEndIconDrawable(R.drawable.ic_arrow_right)
+                    setEndIconOnClickListener {}
+                    defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
+                }
             }
         }
     }

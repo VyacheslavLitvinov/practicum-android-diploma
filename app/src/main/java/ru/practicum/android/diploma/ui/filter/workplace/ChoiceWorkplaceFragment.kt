@@ -1,5 +1,7 @@
 package ru.practicum.android.diploma.ui.filter.workplace
 
+import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -135,6 +137,7 @@ class ChoiceWorkplaceFragment : Fragment() {
                 with(countryContainer!!) {
                     if (s.isNullOrBlank()) {
                         setEndIconDrawable(R.drawable.ic_arrow_right)
+                        defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
                         setEndIconOnClickListener {
                             findNavController().navigate(
                                 R.id.action_choiceWorkplaceFragment_to_choiceCountryFragment
@@ -143,6 +146,17 @@ class ChoiceWorkplaceFragment : Fragment() {
                     } else {
                         endIconMode = TextInputLayout.END_ICON_CUSTOM
                         setEndIconDrawable(R.drawable.search_clear_icon)
+
+                        defaultHintTextColor = ColorStateList.valueOf(
+                            resources.getColor(
+                                if (isDarkTheme()) {
+                                    R.color.white
+                                } else {
+                                    R.color.black
+                                },
+                                null
+                            )
+                        )
 
                         setEndIconOnClickListener {
                             s.clear()
@@ -174,6 +188,7 @@ class ChoiceWorkplaceFragment : Fragment() {
                 with(regionContainer!!) {
                     if (s.isNullOrBlank()) {
                         setEndIconDrawable(R.drawable.ic_arrow_right)
+                        defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
                         setEndIconOnClickListener {
                             val countryId = countryModel?.id ?: ""
                             findNavController().navigate(
@@ -184,6 +199,17 @@ class ChoiceWorkplaceFragment : Fragment() {
                     } else {
                         endIconMode = TextInputLayout.END_ICON_CUSTOM
                         setEndIconDrawable(R.drawable.search_clear_icon)
+
+                        defaultHintTextColor = ColorStateList.valueOf(
+                            resources.getColor(
+                                if (isDarkTheme()) {
+                                    R.color.white
+                                } else {
+                                    R.color.black
+                                },
+                                null
+                            )
+                        )
 
                         setEndIconOnClickListener {
                             s.clear()
@@ -239,6 +265,11 @@ class ChoiceWorkplaceFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun isDarkTheme(): Boolean {
+        return requireActivity().resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
     companion object {
