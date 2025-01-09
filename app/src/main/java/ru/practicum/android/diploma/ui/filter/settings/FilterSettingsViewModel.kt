@@ -13,8 +13,30 @@ class FilterSettingsViewModel(
     private val _counterFilter = MutableLiveData<FilterSettingsState>()
     val counterFilter: LiveData<FilterSettingsState> get() = _counterFilter
 
+    fun clearIndustry() {
+        interactor.clearIndustry()
+    }
+
+    fun clearRegions() {
+        interactor.clearCurrentRegion()
+    }
+
     fun currentFilter() {
         processResult(interactor.getFilterSharedPrefs())
+    }
+
+    fun saveFilterFromUi(filter: Filter, region: String?, industry: String?) {
+        if (isFieldsEmpty(filter, region, industry) &&
+            (filter.onlyWithSalary == false || filter.onlyWithSalary == null)) {
+            interactor.deleteFilterSharedPrefs()
+        } else {
+            interactor.setFilterSharedPrefs(filter)
+        }
+    }
+
+    fun clearFilters() {
+        interactor.deleteFilterSharedPrefs()
+        renderState(FilterSettingsState.Empty)
     }
 
     private fun processResult(result: Filter?) {
@@ -25,18 +47,8 @@ class FilterSettingsViewModel(
         }
     }
 
-    fun saveFilterFromUi(filter: Filter) {
-        val isRegionNull = filter.country == null && filter.region == null
-        if (isRegionNull && filter.industry == null && filter.salary == null && filter.onlyWithSalary == false) {
-            interactor.deleteFilterSharedPrefs()
-        } else {
-            interactor.setFilterSharedPrefs(filter)
-        }
-    }
-
-    fun clearFilters() {
-        interactor.deleteFilterSharedPrefs()
-        renderState(FilterSettingsState.Empty)
+    private fun isFieldsEmpty(filter: Filter, region: String?, industry: String?): Boolean {
+        return region.isNullOrEmpty() && industry.isNullOrEmpty() && filter.salary == null
     }
 
     private fun renderState(state: FilterSettingsState) {

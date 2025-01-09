@@ -10,6 +10,8 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterSettingsBinding
@@ -84,7 +86,11 @@ class FilterSettingsFragment : Fragment() {
                 onlyWithSalary = checkBox
             )
         }
-        viewModel.saveFilterFromUi(filterSave!!)
+        viewModel.saveFilterFromUi(
+            filterSave!!,
+            binding.etCountry.text?.toString(),
+            binding.etIndustries.text?.toString()
+        )
         findNavController().popBackStack()
     }
 
@@ -112,84 +118,31 @@ class FilterSettingsFragment : Fragment() {
         binding.checkBoxSalary.setChecked(false)
     }
 
+    private fun checkVisibilityOfApplyAndResetButtonsForEmptyState() {
+        binding.btApply.isVisible = binding.etCountry.text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
+            binding.etIndustries.text?.isNotEmpty() == true ||
+            binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
+        binding.btReset.isVisible = binding.etCountry.text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
+            binding.etIndustries.text?.isNotEmpty() == true ||
+            binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
+    }
+
     private fun setEmptyFilterUi() {
-        binding.etCountry.doAfterTextChanged { text ->
-            binding.btApply.isVisible = text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
-                binding.etIndustries.text?.isNotEmpty() == true ||
-                binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
-            binding.btReset.isVisible = text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
-                binding.etIndustries.text?.isNotEmpty() == true ||
-                binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
-            with(binding.tilCountry) {
-                if (text?.isNotEmpty() == true) {
-                    setEndIconDrawable(R.drawable.search_clear_icon)
-                    setEndIconOnClickListener {
-                        text.clear()
-                    }
-                    defaultHintTextColor = ColorStateList.valueOf(
-                        if (isDarkTheme()) {
-                            resources.getColor(R.color.white, null)
-                        } else {
-                            resources.getColor(R.color.black, null)
-                        }
-                    )
-                } else {
-                    setEndIconDrawable(R.drawable.ic_arrow_right)
-                    setEndIconOnClickListener {}
-                    defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
-                }
-            }
+        setTextChangedListeners(binding.tilCountry, binding.etCountry)
+        setTextChangedListeners(binding.tilIndustries, binding.etIndustries)
+
+        binding.checkBoxSalary.setOnCheckedChangeListener { _, _ ->
+            checkVisibilityOfApplyAndResetButtonsForEmptyState()
         }
-        binding.etIndustries.doAfterTextChanged { text ->
-            binding.btApply.isVisible = text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
-                binding.etCountry.text?.isNotEmpty() == true ||
-                binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
-            binding.btReset.isVisible = text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
-                binding.etCountry.text?.isNotEmpty() == true ||
-                binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
-            with(binding.tilIndustries) {
-                if (text?.isNotEmpty() == true) {
-                    setEndIconDrawable(R.drawable.search_clear_icon)
-                    setEndIconOnClickListener {
-                        text.clear()
-                    }
-                    defaultHintTextColor = ColorStateList.valueOf(
-                        if (isDarkTheme()) {
-                            resources.getColor(R.color.white, null)
-                        } else {
-                            resources.getColor(R.color.black, null)
-                        }
-                    )
-                } else {
-                    setEndIconDrawable(R.drawable.ic_arrow_right)
-                    setEndIconOnClickListener {}
-                    defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
-                }
-            }
-        }
-        binding.checkBoxSalary.setOnCheckedChangeListener { _, isChecked ->
-            binding.btApply.isVisible = binding.etSalary.text?.isNotEmpty() == true &&
-                binding.etSalary.text?.isNotBlank() == true || isChecked ||
-                binding.etCountry.text?.toString()?.isNotEmpty() == true ||
-                binding.etIndustries.text?.toString()?.isNotEmpty() == true
-            binding.btReset.isVisible = binding.etSalary.text?.isNotEmpty() == true &&
-                binding.etSalary.text?.isNotBlank() == true || isChecked ||
-                binding.etCountry.text?.toString()?.isNotEmpty() == true ||
-                binding.etIndustries.text?.toString()?.isNotEmpty() == true
-        }
-        binding.etSalary.doAfterTextChanged { text ->
-            binding.btApply.isVisible = !text.isNullOrEmpty() && text.isNotBlank() ||
-                binding.checkBoxSalary.isChecked ||
-                binding.etCountry.text?.toString()?.isNotEmpty() == true ||
-                binding.etIndustries.text?.toString()?.isNotEmpty() == true
-            binding.btReset.isVisible = !text.isNullOrEmpty() && text.isNotBlank() ||
-                binding.checkBoxSalary.isChecked ||
-                binding.etCountry.text?.toString()?.isNotEmpty() == true ||
-                binding.etIndustries.text?.toString()?.isNotEmpty() == true
+        binding.etSalary.doAfterTextChanged {
+            checkVisibilityOfApplyAndResetButtonsForEmptyState()
         }
     }
 
     private fun setFilteredUi(filter: Filter) {
+        setTextChangedListeners(binding.tilCountry, binding.etCountry)
+        setTextChangedListeners(binding.tilIndustries, binding.etIndustries)
+
         if (filter.region?.name.isNullOrEmpty()) {
             binding.etCountry.setText(filter.country?.name ?: "")
         } else {
@@ -203,18 +156,22 @@ class FilterSettingsFragment : Fragment() {
             binding.checkBoxSalary.setChecked(filter.onlyWithSalary!!)
         }
         filterSave = filter
-        setInitialStateOfTextInputLayouts()
-        setTextChangedListeners()
     }
 
-    private fun setInitialStateOfTextInputLayouts() {
-        with(binding.tilCountry) {
-            if (binding.etCountry.text?.isNotEmpty() == true) {
-                setEndIconDrawable(R.drawable.search_clear_icon)
-                setEndIconOnClickListener {
-                    binding.etCountry.setText("")
+    private fun setTextChangedListeners(til: TextInputLayout, et: TextInputEditText) {
+        et.doAfterTextChanged { text ->
+            checkVisibilityOfApplyAndResetButtonsForEmptyState()
+            if (text?.isNotEmpty() == true) {
+                til.setEndIconDrawable(R.drawable.search_clear_icon)
+                til.setEndIconOnClickListener {
+                    text.clear()
+                    if (til.id == R.id.tilIndustries) {
+                        viewModel.clearIndustry()
+                    } else {
+                        viewModel.clearRegions()
+                    }
                 }
-                defaultHintTextColor = ColorStateList.valueOf(
+                til.defaultHintTextColor = ColorStateList.valueOf(
                     if (isDarkTheme()) {
                         resources.getColor(R.color.white, null)
                     } else {
@@ -222,69 +179,9 @@ class FilterSettingsFragment : Fragment() {
                     }
                 )
             } else {
-                defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
-            }
-        }
-        with(binding.tilIndustries) {
-            if (binding.etIndustries.text?.isNotEmpty() == true) {
-                setEndIconDrawable(R.drawable.search_clear_icon)
-                setEndIconOnClickListener {
-                    binding.etIndustries.setText("")
-                }
-                defaultHintTextColor = ColorStateList.valueOf(
-                    if (isDarkTheme()) {
-                        resources.getColor(R.color.white, null)
-                    } else {
-                        resources.getColor(R.color.black, null)
-                    }
-                )
-            } else {
-                defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
-            }
-        }
-    }
-
-    private fun setTextChangedListeners() {
-        binding.etCountry.doAfterTextChanged { text ->
-            with(binding.tilCountry) {
-                if (text?.isNotEmpty() == true) {
-                    setEndIconDrawable(R.drawable.search_clear_icon)
-                    setEndIconOnClickListener {
-                        text.clear()
-                    }
-                    defaultHintTextColor = ColorStateList.valueOf(
-                        if (isDarkTheme()) {
-                            resources.getColor(R.color.white, null)
-                        } else {
-                            resources.getColor(R.color.black, null)
-                        }
-                    )
-                } else {
-                    setEndIconDrawable(R.drawable.ic_arrow_right)
-                    setEndIconOnClickListener {}
-                    defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
-                }
-            }
-        }
-        binding.etIndustries.doAfterTextChanged { text ->
-            with(binding.tilIndustries) {
-                if (text?.isNotEmpty() == true) {
-                    setEndIconDrawable(R.drawable.search_clear_icon)
-                    setEndIconOnClickListener {
-                        text.clear()
-                    }
-                    defaultHintTextColor = ColorStateList.valueOf(
-                        if (isDarkTheme()) {
-                            resources.getColor(R.color.white, null)
-                        } else {
-                            resources.getColor(R.color.black, null)
-                        }
-                    )
-                } else {
-                    setEndIconDrawable(R.drawable.ic_arrow_right)
-                    setEndIconOnClickListener {}
-                    defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
-                }
+                til.setEndIconDrawable(R.drawable.ic_arrow_right)
+                til.setEndIconOnClickListener {}
+                til.defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
             }
         }
     }

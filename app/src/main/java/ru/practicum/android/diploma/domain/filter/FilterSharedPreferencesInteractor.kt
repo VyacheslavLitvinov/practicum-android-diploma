@@ -7,4 +7,6 @@ interface FilterSharedPreferencesInteractor {
     fun setFilterSharedPrefs(filter: Filter)
     fun deleteFilterSharedPrefs()
     fun clearRegions(newFilter: Filter)
+    fun clearCurrentRegion()
+    fun clearIndustry()
 }
