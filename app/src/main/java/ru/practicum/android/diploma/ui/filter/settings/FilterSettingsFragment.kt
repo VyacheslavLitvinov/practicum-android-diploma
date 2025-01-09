@@ -61,6 +61,8 @@ class FilterSettingsFragment : Fragment() {
 
         binding.btReset.setOnClickListener {
             viewModel.clearFilters()
+            setClearFiltersView()
+            viewModel.checkVisibilityOfButtons()
         }
 
         binding.etCountry.setOnClickListener {
@@ -82,20 +84,20 @@ class FilterSettingsFragment : Fragment() {
         }
     }
 
+    private fun setClearFiltersView() {
+        binding.etCountry.setText("")
+        binding.etIndustries.setText("")
+        binding.etSalary.setText("")
+        binding.checkBoxSalary.isChecked = false
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     private fun applyFilter() {
-        val checkBox = binding.checkBoxSalary.isChecked
-
-        if (binding.etSalary.text.isNullOrEmpty()) {
-            viewModel.saveFilterFromUi(null, checkBox)
-        } else {
-            val salary = binding.etSalary.text.toString().toInt()
-            viewModel.saveFilterFromUi(salary, checkBox)
-        }
+        viewModel.saveFilterFromUi()
         findNavController().popBackStack()
     }
 
@@ -103,6 +105,8 @@ class FilterSettingsFragment : Fragment() {
         when (state) {
             is FilterSettingsState.FilterSettings -> {
                 setFilteredUi(state.filter)
+                binding.btApply.isVisible = true
+                binding.btReset.isVisible = true
             }
 
             is FilterSettingsState.Empty -> {
@@ -111,21 +115,18 @@ class FilterSettingsFragment : Fragment() {
         }
     }
 
-    private fun checkVisibilityOfApplyAndResetButtonsForEmptyState() {
-        binding.btApply.isVisible = binding.etCountry.text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
-            binding.etIndustries.text?.isNotEmpty() == true ||
-            binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
-        binding.btReset.isVisible = binding.etCountry.text?.isNotEmpty() == true || binding.checkBoxSalary.isChecked ||
-            binding.etIndustries.text?.isNotEmpty() == true ||
-            binding.etSalary.text?.isNotEmpty() == true && binding.etSalary.text?.isNotBlank() == true
-    }
-
     private fun setEmptyFilterUi() {
-        binding.checkBoxSalary.setOnCheckedChangeListener { _, _ ->
-            checkVisibilityOfApplyAndResetButtonsForEmptyState()
+        binding.checkBoxSalary.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.setSelectedOnlyWithSalary(isChecked)
+            viewModel.checkVisibilityOfButtons()
         }
-        binding.etSalary.doAfterTextChanged {
-            checkVisibilityOfApplyAndResetButtonsForEmptyState()
+        binding.etSalary.doAfterTextChanged { text ->
+            if (!text.isNullOrEmpty()) {
+                viewModel.setSelectedSalary(text.toString().toInt())
+            } else {
+                viewModel.setSelectedSalary(null)
+            }
+            viewModel.checkVisibilityOfButtons()
         }
     }
 
@@ -156,6 +157,9 @@ class FilterSettingsFragment : Fragment() {
                     } else {
                         viewModel.clearRegions()
                     }
+                    if (viewModel.counterFilter.value is FilterSettingsState.Empty) {
+                        viewModel.checkVisibilityOfButtons()
+                    }
                 }
                 til.defaultHintTextColor = ColorStateList.valueOf(
                     if (isDarkTheme()) {
@@ -177,6 +181,7 @@ class FilterSettingsFragment : Fragment() {
             this?.getLiveData<Country?>(COUNTRY_BACKSTACK_KEY)?.observe(viewLifecycleOwner) { country ->
                 viewModel.setSelectedCountry(country)
                 binding.etCountry.setText(country?.name ?: "")
+                viewModel.checkVisibilityOfButtons()
             }
 
             this?.getLiveData<Region?>(REGION_BACKSTACK_KEY)?.observe(viewLifecycleOwner) { region ->
@@ -191,11 +196,13 @@ class FilterSettingsFragment : Fragment() {
                         )
                     )
                 }
+                viewModel.checkVisibilityOfButtons()
             }
 
             this?.getLiveData<Industry?>(INDUSTRY_BACKSTACK_KEY)?.observe(viewLifecycleOwner) { industry ->
                 viewModel.setSelectedIndustry(industry)
                 binding.etIndustries.setText(industry?.name)
+                viewModel.checkVisibilityOfButtons()
             }
         }
     }

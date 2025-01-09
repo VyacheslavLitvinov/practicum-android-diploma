@@ -13,9 +13,7 @@ class FilterSettingsViewModel(
     private val interactor: FilterSharedPreferencesInteractor
 ) : ViewModel() {
 
-    private val updatedFilter = Filter()
-
-    private val currentFilter: Filter? = interactor.getFilterSharedPrefs()
+    private val updatedFilter = Filter(onlyWithSalary = false)
 
     private val _counterFilter = MutableLiveData<FilterSettingsState>()
     val counterFilter: LiveData<FilterSettingsState> get() = _counterFilter
@@ -37,6 +35,16 @@ class FilterSettingsViewModel(
         setVisibilityOfApplyResetButtons(true)
     }
 
+    fun setSelectedOnlyWithSalary(withSalary: Boolean) {
+        updatedFilter.onlyWithSalary = withSalary
+        setVisibilityOfApplyResetButtons(withSalary)
+    }
+
+    fun setSelectedSalary(sal: Int?) {
+        updatedFilter.salary = sal
+        setVisibilityOfApplyResetButtons(true)
+    }
+
     fun clearIndustry() {
         updatedFilter.industry = null
         interactor.clearIndustry()
@@ -52,12 +60,10 @@ class FilterSettingsViewModel(
         processResult(interactor.getFilterSharedPrefs())
     }
 
-    fun saveFilterFromUi(sal: Int?, onlyWithSal: Boolean) {
-        if (isFieldsEmpty() && !onlyWithSal && sal == null) {
+    fun saveFilterFromUi() {
+        if (isFieldsEmpty() && updatedFilter.onlyWithSalary == false && updatedFilter.salary == null) {
             interactor.deleteFilterSharedPrefs()
         } else {
-            updatedFilter.salary = sal
-            updatedFilter.onlyWithSalary = onlyWithSal
             interactor.setFilterSharedPrefs(updatedFilter)
         }
     }
@@ -65,6 +71,16 @@ class FilterSettingsViewModel(
     fun clearFilters() {
         interactor.deleteFilterSharedPrefs()
         renderState(FilterSettingsState.Empty)
+        setVisibilityOfApplyResetButtons(false)
+    }
+
+    fun checkVisibilityOfButtons() {
+        applyResetButtonsStateLiveData.postValue(
+            ApplyResetButtonsState(
+                updatedFilter.country != null || updatedFilter.region != null || updatedFilter.industry != null ||
+                updatedFilter.salary != null || updatedFilter.onlyWithSalary == true
+            )
+        )
     }
 
     private fun setVisibilityOfApplyResetButtons(visible: Boolean) {

@@ -18,7 +18,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentChoiceWorkplaceBinding
 import ru.practicum.android.diploma.domain.models.Country
-import ru.practicum.android.diploma.domain.models.Filter
 import ru.practicum.android.diploma.domain.models.Region
 import ru.practicum.android.diploma.ui.filter.workplace.region.ChoiceRegionFragment
 
@@ -98,14 +97,8 @@ class ChoiceWorkplaceFragment : Fragment() {
         }
 
         submitButton?.setOnClickListener {
-            val filterSettings: Filter = if (regionModel?.name.isNullOrEmpty()) {
-                viewModel.clearRegion(Filter(region = regionModel))
-                Filter(country = countryModel, region = regionModel)
-            } else {
-                Filter(country = countryModel, region = regionModel)
-            }
-            findNavController().previousBackStackEntry?.savedStateHandle?.set(COUNTRY_BACKSTACK_KEY, filterSettings.country)
-            findNavController().previousBackStackEntry?.savedStateHandle?.set(REGION_BACKSTACK_KEY, filterSettings.region)
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(COUNTRY_BACKSTACK_KEY, countryModel)
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(REGION_BACKSTACK_KEY, regionModel)
             findNavController().popBackStack()
         }
 
