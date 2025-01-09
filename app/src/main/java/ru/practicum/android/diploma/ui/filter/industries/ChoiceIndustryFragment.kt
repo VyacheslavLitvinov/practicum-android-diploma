@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.databinding.FragmentChoiceIndustryBinding
 import ru.practicum.android.diploma.domain.models.Filter
@@ -66,8 +67,7 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
         )
 
         binding.btEnter.setOnClickListener {
-            val saveIndustryFilter = Filter(industry = data)
-            viewModel.setFilter(saveIndustryFilter)
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(INDUSTRY_BACKSTACK_KEY, data)
             parentFragmentManager.popBackStack()
         }
 
@@ -125,5 +125,9 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
 
     override fun onClick(industry: Industry) {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        private const val INDUSTRY_BACKSTACK_KEY = "industry_key"
     }
 }

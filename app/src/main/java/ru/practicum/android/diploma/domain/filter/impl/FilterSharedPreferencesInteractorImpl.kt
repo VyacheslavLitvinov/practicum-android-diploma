@@ -18,7 +18,16 @@ class FilterSharedPreferencesInteractorImpl(private val repository: FilterShared
     override fun deleteFilterSharedPrefs() {
         return repository.clearFilterSharedPrefs()
     }
+
     override fun clearRegions(newFilter: Filter) {
         repository.clearRegions(newFilter)
+    }
+
+    override fun clearCurrentRegion() {
+        repository.clearCurrentRegion()
+    }
+
+    override fun clearIndustry() {
+        repository.clearIndustry()
     }
 }
