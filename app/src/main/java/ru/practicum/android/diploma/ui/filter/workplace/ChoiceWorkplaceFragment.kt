@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.ui.filter.workplace
 
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,6 +20,7 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentChoiceWorkplaceBinding
 import ru.practicum.android.diploma.domain.models.Country
 import ru.practicum.android.diploma.domain.models.Region
+import ru.practicum.android.diploma.domain.models.WorkplaceFilter
 import ru.practicum.android.diploma.ui.filter.workplace.region.ChoiceRegionFragment
 
 class ChoiceWorkplaceFragment : Fragment() {
@@ -33,6 +35,7 @@ class ChoiceWorkplaceFragment : Fragment() {
     private var regionContainer: TextInputLayout? = null
     private var submitButton: TextView? = null
     private var backButton: ImageView? = null
+    private var workplaceFilter: WorkplaceFilter? = null
     private val viewModel by viewModel<ChoiceWorkplaceViewModel>()
 
     override fun onCreateView(
@@ -46,22 +49,27 @@ class ChoiceWorkplaceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        workplaceFilter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(KEY_FOR_BUNDLE_DATA, WorkplaceFilter::class.java)
+        } else {
+            arguments?.getParcelable(KEY_FOR_BUNDLE_DATA)
+        }
 
         setViews()
         setOnClickListeners()
         setTextChangedListeners()
         setBackStackListeners()
 
-        binding.etCountry.setText(countryModel?.name)
-        binding.etRegion.setText(regionModel?.name)
+        if (workplaceFilter?.nameCountry.isNullOrEmpty()) {
+            binding.etCountry.setText(countryModel?.name)
+        } else {
+            binding.etCountry.setText(workplaceFilter?.nameCountry)
+        }
 
-        if (arguments?.getBoolean(KEY_FOR_BUNDLE_DATA) != null) {
-            arguments = null
-            viewModel.getChoiceWorkplaceScreenStateLiveData.observe(viewLifecycleOwner) { screenState ->
-                binding.etCountry.setText(screenState?.country)
-                binding.etRegion.setText(screenState?.region)
-            }
-            viewModel.getFilter()
+        if (workplaceFilter?.nameRegion.isNullOrEmpty()) {
+            binding.etRegion.setText(regionModel?.name)
+        } else {
+            binding.etRegion.setText(workplaceFilter?.nameRegion)
         }
     }
 
@@ -175,7 +183,6 @@ class ChoiceWorkplaceFragment : Fragment() {
         val regionTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
             override fun afterTextChanged(s: Editable?) {
                 with(regionContainer!!) {
                     if (s.isNullOrBlank()) {
@@ -205,6 +212,7 @@ class ChoiceWorkplaceFragment : Fragment() {
 
                         setEndIconOnClickListener {
                             s.clear()
+                            regionTextInput?.text?.clear()
                             regionModel = null
 
                             findNavController().currentBackStackEntry?.savedStateHandle?.set(

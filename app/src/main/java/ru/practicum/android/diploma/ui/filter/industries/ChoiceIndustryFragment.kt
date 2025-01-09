@@ -33,7 +33,7 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val foundedIndustryRv = binding.rvFoundedIndustry
-
+        val idIndustry: String? = arguments?.getString(INDUSTRY_KEY)
         binding.rvFoundedIndustry.isVisible = true
         viewModel.showIndustries()
 
@@ -54,7 +54,7 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
 
         val foundedIndustryAdapter = IndustriesAdapter(
             onItemClicked = onItemClickListener,
-            selectedPosition = data?.id
+            selectedPosition = idIndustry
         )
         foundedIndustryRv.adapter = foundedIndustryAdapter
 
@@ -88,6 +88,7 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
                 binding.placeholderNotFound.isVisible = false
                 binding.placeholderServerError.isVisible = false
             }
+
             is IndustriesState.NothingFound -> {
                 adapter?.updateIndustries(emptyList())
                 binding.rvFoundedIndustry.isVisible = false
@@ -96,12 +97,14 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
                 binding.placeholderNotFound.isVisible = true
 
             }
+
             IndustriesState.NetworkError -> {
                 binding.rvFoundedIndustry.isVisible = false
                 binding.placeholderNotFound.isVisible = false
                 binding.placeholderServerError.isVisible = false
                 binding.placeholderNoInternet.isVisible = true
             }
+
             IndustriesState.ServerError -> {
                 binding.rvFoundedIndustry.isVisible = false
                 binding.placeholderNotFound.isVisible = false
@@ -129,5 +132,6 @@ class ChoiceIndustryFragment : Fragment(), IndustriesAdapter.Listener {
 
     companion object {
         private const val INDUSTRY_BACKSTACK_KEY = "industry_key"
+        private const val INDUSTRY_KEY = "industry"
     }
 }
