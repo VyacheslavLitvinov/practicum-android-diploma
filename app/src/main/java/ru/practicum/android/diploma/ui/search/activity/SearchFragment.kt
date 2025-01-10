@@ -115,7 +115,7 @@ class SearchFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.updateFilterState()
+        viewModel.updateFilterState("0")
         if (viewModel.getSearchScreenStateLiveData().value is SearchScreenState.Content ||
             viewModel.getSearchScreenStateLiveData().value is SearchScreenState.NotFound) {
             viewModel.searchVacancies()

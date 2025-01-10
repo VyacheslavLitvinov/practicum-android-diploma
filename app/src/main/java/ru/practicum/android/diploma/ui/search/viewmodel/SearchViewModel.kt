@@ -76,7 +76,7 @@ class SearchViewModel(
         currentSearchParams.searchQuery = query
     }
 
-    fun updateFilterState() {
+    fun updateFilterState(page: String? = null) {
         val filter = filterSharPrefInteractor.getFilterSharedPrefs()
 
         if (filter != null) {
@@ -92,11 +92,17 @@ class SearchViewModel(
                     null
                 }
             currentSearchParams.nameOfIndustryForFilter = filter.industry?.id
+            if (page != null) {
+                currentSearchParams.numberOfPage = page
+            }
         } else {
             currentSearchParams.expectedSalary = null
             currentSearchParams.onlyWithSalary = false
             currentSearchParams.nameOfCityForFilter = null
             currentSearchParams.nameOfIndustryForFilter = null
+            if (page != null) {
+                currentSearchParams.numberOfPage = page
+            }
             filterButtonStateLiveData.postValue(FilterButtonState.FilterOff)
         }
     }
