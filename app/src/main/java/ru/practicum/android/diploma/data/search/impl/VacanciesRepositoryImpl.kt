@@ -46,7 +46,11 @@ class VacanciesRepositoryImpl(
     }
 
     private fun createHttpException(code: Int, message: String): HttpException {
-        val validCode = if (code < 400) 400 else code
+        val validCode = if (code < RetrofitNetworkClient.HTTP_BAD_REQUEST_CODE) {
+            RetrofitNetworkClient.HTTP_BAD_REQUEST_CODE
+        } else {
+            code
+        }
         return HttpException(
             Response.error<Any>(
                 validCode,
