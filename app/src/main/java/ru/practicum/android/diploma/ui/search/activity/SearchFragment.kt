@@ -217,6 +217,7 @@ class SearchFragment : Fragment() {
 
     private fun showServerError() {
         with(binding) {
+            vacancyCounter.isVisible = false
             progressBar.isVisible = false
             rvFoundedVacancies.isVisible = false
             serverErrorPlaceholder.isVisible = true

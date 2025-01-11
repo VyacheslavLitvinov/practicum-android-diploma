@@ -46,9 +46,10 @@ class VacanciesRepositoryImpl(
     }
 
     private fun createHttpException(code: Int, message: String): HttpException {
+        val validCode = if (code < 400) 400 else code
         return HttpException(
             Response.error<Any>(
-                code,
+                validCode,
                 ResponseBody.create(null, message)
             )
         )
