@@ -118,7 +118,7 @@ class SearchFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.updateFilterState()
+        viewModel.updateFilterState("0")
         if (viewModel.getSearchScreenStateLiveData().value is SearchScreenState.Content ||
             viewModel.getSearchScreenStateLiveData().value is SearchScreenState.NotFound) {
             viewModel.searchVacancies()
@@ -220,6 +220,7 @@ class SearchFragment : Fragment() {
 
     private fun showServerError() {
         with(binding) {
+            vacancyCounter.isVisible = false
             progressBar.isVisible = false
             rvFoundedVacancies.isVisible = false
             serverErrorPlaceholder.isVisible = true

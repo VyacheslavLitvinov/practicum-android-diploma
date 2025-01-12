@@ -56,11 +56,12 @@
             style="@style/SearchEditText"
             android:focusableInTouchMode="true"
             android:imeOptions="actionDone"
+            android:paddingEnd="@dimen/margin34"
             android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/enter_industry"
-            tools:ignore="Autofill,TextFields" />
+            tools:ignore="Autofill,RtlSymmetry,TextFields" />
 
         <ImageButton
             android:id="@+id/ibClearQuery"
