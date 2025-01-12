@@ -14,7 +14,7 @@ class FilterSharedPreferencesRepositoryImpl(private val sharedPrefs: SharedPrefe
 
     override fun setFilterSharedPrefs(newFilter: Filter) {
         val currentFilterJson = sharedPrefs.getString(USER_KEY, null)
-        var currentFilter = if (currentFilterJson != null) {
+        val currentFilter = if (currentFilterJson != null) {
             Gson().fromJson(currentFilterJson, Filter::class.java)
         } else {
             Filter()
@@ -43,7 +43,7 @@ class FilterSharedPreferencesRepositoryImpl(private val sharedPrefs: SharedPrefe
 
     override fun clearRegions(newFilter: Filter) {
         val currentFilterJson = sharedPrefs.getString(USER_KEY, null)
-        var currentFilter = if (currentFilterJson != null) {
+        val currentFilter = if (currentFilterJson != null) {
             Gson().fromJson(currentFilterJson, Filter::class.java)
         } else {
             Filter()
@@ -70,8 +70,56 @@ class FilterSharedPreferencesRepositoryImpl(private val sharedPrefs: SharedPrefe
             .apply()
     }
 
+    override fun clearCurrentRegion() {
+        val currentFilterJson = sharedPrefs.getString(USER_KEY, null)
+        val currentFilter = if (currentFilterJson != null) {
+            Gson().fromJson(currentFilterJson, Filter::class.java)
+        } else {
+            Filter()
+        }
+
+        currentFilter.country = null
+        currentFilter.region = null
+
+        if ((currentFilter.onlyWithSalary == false || currentFilter.onlyWithSalary == null) &&
+            isAllFieldsEmpty(currentFilter)) {
+            clearFilterSharedPrefs()
+        } else {
+            val updatedJson = Gson().toJson(currentFilter)
+            sharedPrefs.edit()
+                .putString(USER_KEY, updatedJson)
+                .apply()
+        }
+    }
+
+    override fun clearIndustry() {
+        val currentFilterJson = sharedPrefs.getString(USER_KEY, null)
+        val currentFilter = if (currentFilterJson != null) {
+            Gson().fromJson(currentFilterJson, Filter::class.java)
+        } else {
+            Filter()
+        }
+
+        currentFilter.industry = null
+
+        if ((currentFilter.onlyWithSalary == false ||
+                currentFilter.onlyWithSalary == null) && isAllFieldsEmpty(currentFilter)) {
+            clearFilterSharedPrefs()
+        } else {
+            val updatedJson = Gson().toJson(currentFilter)
+            sharedPrefs.edit()
+                .putString(USER_KEY, updatedJson)
+                .apply()
+        }
+    }
+
     override fun clearFilterSharedPrefs() {
         sharedPrefs.edit().clear().apply()
+    }
+
+    private fun isAllFieldsEmpty(currentFilter: Filter): Boolean {
+        return currentFilter.industry == null && currentFilter.country == null && currentFilter.region == null
+            && currentFilter.salary == null
     }
 
     companion object {

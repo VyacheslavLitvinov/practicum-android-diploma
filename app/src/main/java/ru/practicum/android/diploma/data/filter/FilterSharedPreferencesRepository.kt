@@ -7,4 +7,6 @@ interface FilterSharedPreferencesRepository {
     fun setFilterSharedPrefs(newFilter: Filter)
     fun clearFilterSharedPrefs()
     fun clearRegions(newFilter: Filter)
+    fun clearCurrentRegion()
+    fun clearIndustry()
 }

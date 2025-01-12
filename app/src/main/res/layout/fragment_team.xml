@@ -58,47 +58,47 @@
         app:layout_constraintTop_toBottomOf="@id/topGuideline" />
 
     <TextView
-        android:id="@+id/QAName"
+        android:id="@+id/devOne"
         style="@style/Medium16Text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/qa_name"
+        android:text="@string/dev_one"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
         app:layout_constraintTop_toBottomOf="@id/descriptionTittle" />
 
     <TextView
-        android:id="@+id/gradeName"
+        android:id="@+id/devTwo"
         style="@style/Medium16Text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/team_indent"
-        android:text="@string/grade_name"
+        android:text="@string/dev_two"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
-        app:layout_constraintTop_toBottomOf="@id/QAName" />
+        app:layout_constraintTop_toBottomOf="@id/devOne" />
 
     <TextView
-        android:id="@+id/designName"
+        android:id="@+id/devThree"
         style="@style/Medium16Text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/team_indent"
-        android:text="@string/design_name"
+        android:text="@string/dev_three"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
-        app:layout_constraintTop_toBottomOf="@id/gradeName" />
+        app:layout_constraintTop_toBottomOf="@id/devTwo" />
 
     <TextView
-        android:id="@+id/devName"
+        android:id="@+id/devFour"
         style="@style/Medium16Text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/team_indent"
-        android:text="@string/dev_name"
+        android:text="@string/dev_four"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
-        app:layout_constraintTop_toBottomOf="@id/designName" />
+        app:layout_constraintTop_toBottomOf="@id/devThree" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

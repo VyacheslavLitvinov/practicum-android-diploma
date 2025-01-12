@@ -1,5 +1,8 @@
 package ru.practicum.android.diploma.ui.filter.workplace
 
+import android.content.res.ColorStateList
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,11 +19,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentChoiceWorkplaceBinding
 import ru.practicum.android.diploma.domain.models.Country
-import ru.practicum.android.diploma.domain.models.Filter
 import ru.practicum.android.diploma.domain.models.Region
-import ru.practicum.android.diploma.ui.filter.workplace.country.ChoiceCountryFragment.Companion.COUNTRY_BACKSTACK_KEY
+import ru.practicum.android.diploma.domain.models.WorkplaceFilter
 import ru.practicum.android.diploma.ui.filter.workplace.region.ChoiceRegionFragment
-import ru.practicum.android.diploma.ui.filter.workplace.region.ChoiceRegionFragment.Companion.REGION_BACKSTACK_KEY
 
 class ChoiceWorkplaceFragment : Fragment() {
 
@@ -34,6 +35,7 @@ class ChoiceWorkplaceFragment : Fragment() {
     private var regionContainer: TextInputLayout? = null
     private var submitButton: TextView? = null
     private var backButton: ImageView? = null
+    private var workplaceFilter: WorkplaceFilter? = null
     private val viewModel by viewModel<ChoiceWorkplaceViewModel>()
 
     override fun onCreateView(
@@ -47,14 +49,28 @@ class ChoiceWorkplaceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        workplaceFilter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(KEY_FOR_BUNDLE_DATA, WorkplaceFilter::class.java)
+        } else {
+            arguments?.getParcelable(KEY_FOR_BUNDLE_DATA)
+        }
 
         setViews()
         setOnClickListeners()
         setTextChangedListeners()
         setBackStackListeners()
 
-        binding.etCountry.setText(countryModel?.name)
-        binding.etRegion.setText(regionModel?.name)
+        if (workplaceFilter?.nameCountry.isNullOrEmpty()) {
+            binding.etCountry.setText(countryModel?.name)
+        } else {
+            binding.etCountry.setText(workplaceFilter?.nameCountry)
+        }
+
+        if (workplaceFilter?.nameRegion.isNullOrEmpty()) {
+            binding.etRegion.setText(regionModel?.name)
+        } else {
+            binding.etRegion.setText(workplaceFilter?.nameRegion)
+        }
     }
 
     override fun onDestroyView() {
@@ -89,13 +105,8 @@ class ChoiceWorkplaceFragment : Fragment() {
         }
 
         submitButton?.setOnClickListener {
-            val filterSettings: Filter = if (regionModel?.name.isNullOrEmpty()) {
-                viewModel.clearRegion(Filter(region = regionModel))
-                Filter(country = countryModel, region = regionModel)
-            } else {
-                Filter(country = countryModel, region = regionModel)
-            }
-            viewModel.setFilter(filterSettings)
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(COUNTRY_BACKSTACK_KEY, countryModel)
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(REGION_BACKSTACK_KEY, regionModel)
             findNavController().popBackStack()
         }
 
@@ -126,6 +137,7 @@ class ChoiceWorkplaceFragment : Fragment() {
                 with(countryContainer!!) {
                     if (s.isNullOrBlank()) {
                         setEndIconDrawable(R.drawable.ic_arrow_right)
+                        defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
                         setEndIconOnClickListener {
                             findNavController().navigate(
                                 R.id.action_choiceWorkplaceFragment_to_choiceCountryFragment
@@ -134,6 +146,17 @@ class ChoiceWorkplaceFragment : Fragment() {
                     } else {
                         endIconMode = TextInputLayout.END_ICON_CUSTOM
                         setEndIconDrawable(R.drawable.search_clear_icon)
+
+                        defaultHintTextColor = ColorStateList.valueOf(
+                            resources.getColor(
+                                if (isDarkTheme()) {
+                                    R.color.white
+                                } else {
+                                    R.color.black
+                                },
+                                null
+                            )
+                        )
 
                         setEndIconOnClickListener {
                             s.clear()
@@ -160,11 +183,11 @@ class ChoiceWorkplaceFragment : Fragment() {
         val regionTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
             override fun afterTextChanged(s: Editable?) {
                 with(regionContainer!!) {
                     if (s.isNullOrBlank()) {
                         setEndIconDrawable(R.drawable.ic_arrow_right)
+                        defaultHintTextColor = ColorStateList.valueOf(resources.getColor(R.color.hh_grey, null))
                         setEndIconOnClickListener {
                             val countryId = countryModel?.id ?: ""
                             findNavController().navigate(
@@ -176,8 +199,20 @@ class ChoiceWorkplaceFragment : Fragment() {
                         endIconMode = TextInputLayout.END_ICON_CUSTOM
                         setEndIconDrawable(R.drawable.search_clear_icon)
 
+                        defaultHintTextColor = ColorStateList.valueOf(
+                            resources.getColor(
+                                if (isDarkTheme()) {
+                                    R.color.white
+                                } else {
+                                    R.color.black
+                                },
+                                null
+                            )
+                        )
+
                         setEndIconOnClickListener {
                             s.clear()
+                            regionTextInput?.text?.clear()
                             regionModel = null
 
                             findNavController().currentBackStackEntry?.savedStateHandle?.set(
@@ -230,5 +265,16 @@ class ChoiceWorkplaceFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun isDarkTheme(): Boolean {
+        return requireActivity().resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    companion object {
+        private const val KEY_FOR_BUNDLE_DATA = "region_was_selected"
+        private const val COUNTRY_BACKSTACK_KEY = "country_key"
+        private const val REGION_BACKSTACK_KEY = "region_key"
     }
 }

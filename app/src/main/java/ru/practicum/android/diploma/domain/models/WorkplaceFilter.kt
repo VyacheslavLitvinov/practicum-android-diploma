@@ -4,7 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class Industry(
-    val id: String,
-    val name: String
+data class WorkplaceFilter(
+    val nameRegion: String? = null,
+    val nameCountry: String? = null,
 ) : Parcelable
+

@@ -49,27 +49,14 @@ class SearchViewModel(
     private val _showToast = SingleLiveEvent<String>()
     fun observeShowToast(): LiveData<String> = _showToast
 
+    private val filterButtonStateLiveData = MutableLiveData<FilterButtonState>()
+    fun getFilterButtonStateLiveData(): LiveData<FilterButtonState> = filterButtonStateLiveData
+
     fun getSearchScreenStateLiveData(): LiveData<SearchScreenState> = searchScreenStateLiveData
 
     fun searchVacancies() {
         if (isNextPageLoading) return
         isNextPageLoading = true
-
-        val filter = filterSharPrefInteractor.getFilterSharedPrefs()
-
-        if (filter != null) {
-            currentSearchParams.expectedSalary = filter.salary?.toString()
-            currentSearchParams.onlyWithSalary = filter.onlyWithSalary ?: false
-            currentSearchParams.nameOfCityForFilter =
-                if (filter.region != null) {
-                    filter.region?.id
-                } else if (filter.country != null) {
-                    filter.country?.id
-                } else {
-                    null
-                }
-            currentSearchParams.nameOfIndustryForFilter = filter.industry?.id
-        }
 
         updateLoadingState(currentSearchParams)
 
@@ -86,8 +73,33 @@ class SearchViewModel(
         }
     }
 
-    fun saveSearchParams(params: SearchParams) {
-        currentSearchParams = params
+    fun insertQueryInSearchParams(query: String) {
+        currentSearchParams.searchQuery = query
+    }
+
+    fun updateFilterState() {
+        val filter = filterSharPrefInteractor.getFilterSharedPrefs()
+
+        if (filter != null) {
+            filterButtonStateLiveData.postValue(FilterButtonState.FilterOn)
+            currentSearchParams.expectedSalary = filter.salary?.toString()
+            currentSearchParams.onlyWithSalary = filter.onlyWithSalary ?: false
+            currentSearchParams.nameOfCityForFilter =
+                if (filter.region != null) {
+                    filter.region?.id
+                } else if (filter.country != null) {
+                    filter.country?.id
+                } else {
+                    null
+                }
+            currentSearchParams.nameOfIndustryForFilter = filter.industry?.id
+        } else {
+            currentSearchParams.expectedSalary = null
+            currentSearchParams.onlyWithSalary = false
+            currentSearchParams.nameOfCityForFilter = null
+            currentSearchParams.nameOfIndustryForFilter = null
+            filterButtonStateLiveData.postValue(FilterButtonState.FilterOff)
+        }
     }
 
     private fun updateLoadingState(searchParams: SearchParams) {
