@@ -25,7 +25,6 @@ import java.util.Locale
 class FilterSettingsFragment : Fragment() {
 
     private var _binding: FragmentFilterSettingsBinding? = null
-    private var filterSave: Filter? = null
     private var industrySave: Industry? = null
     private var countrySave: String? = null
     private var regionSave: String? = null
@@ -89,6 +88,8 @@ class FilterSettingsFragment : Fragment() {
         binding.etIndustries.setText("")
         binding.etSalary.setText("")
         binding.checkBoxSalary.isChecked = false
+        clearIndustry()
+        clearWorkplace()
     }
 
     override fun onDestroyView() {
@@ -165,8 +166,10 @@ class FilterSettingsFragment : Fragment() {
                     text.clear()
                     if (til.id == R.id.tilIndustries) {
                         viewModel.clearIndustry()
+                        clearIndustry()
                     } else {
                         viewModel.clearRegions()
+                        clearWorkplace()
                     }
                     if (viewModel.counterFilter.value is FilterSettingsState.Empty) {
                         viewModel.checkVisibilityOfButtons()
@@ -223,6 +226,18 @@ class FilterSettingsFragment : Fragment() {
                 industrySave = industry
             }
         }
+    }
+
+    private fun clearWorkplace() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.set(COUNTRY_BACKSTACK_KEY, null)
+        findNavController().currentBackStackEntry?.savedStateHandle?.set(REGION_BACKSTACK_KEY, null)
+        countrySave = null
+        regionSave = null
+    }
+
+    private fun clearIndustry() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.set(INDUSTRY_BACKSTACK_KEY, null)
+        industrySave = null
     }
 
     private fun isDarkTheme(): Boolean {
